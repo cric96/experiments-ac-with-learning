@@ -52,6 +52,8 @@ displacements:
     contents:
       - molecule: target
         concentration: 0.0
+      - molecule: y
+        concentration: 0.0
   - in:
       type: Rectangle
       parameters: [1, 0, 0, *width, *width] #target
@@ -60,3 +62,6 @@ displacements:
     contents:
       - molecule: target
         concentration: 1.0
+      - molecule: y
+        concentration: 0.0
+

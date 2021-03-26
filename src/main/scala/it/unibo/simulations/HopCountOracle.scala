@@ -22,6 +22,8 @@ class HopCountOracle
       node.put("status", sense[Double]("target"))
       val result = guess(min)
       node.put("y", result)
+      node.put("color", result * 50)
+
       result
     }.toInt
 
