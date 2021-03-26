@@ -17,13 +17,12 @@ class HopCountOracle
   lazy val me: Node[Any] = alchemistEnvironment.getNodeByID(mid())
   override def main(): Int = {
     rep(Double.PositiveInfinity) { data =>
-      val min = minHood(nbr(data))
+      val min = minHoodPlus(nbr(data))
       node.put("min", min)
       node.put("status", sense[Double]("target"))
       val result = guess(min)
       node.put("y", result)
       node.put("color", result * 50)
-
       result
     }.toInt
 

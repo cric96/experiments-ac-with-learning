@@ -1,12 +1,12 @@
 variables:
   random: &random
     min: 0
-    max: 2
+    max: 5
     step: 1
     default: 2
 
   range: &range
-    formula: 100
+    formula: 80
     language: js
 
   width: &width
@@ -43,6 +43,13 @@ pools:
         - type: RunScafiProgram
           parameters: [it.unibo.simulations.HopCountOracle, 5.0] # second argument is retention time
     - program: send
+  - pool: &extractor
+      - time-distribution:
+          type: DiracComb
+          parameters: [0.1]
+        type: Event
+        actions:
+          - type: ExtractCsv
 displacements:
   - in:
       type: Rectangle
@@ -54,12 +61,18 @@ displacements:
         concentration: 0.0
       - molecule: y
         concentration: 0.0
+      - molecule: min
+        concentration: 0.0
+
   - in:
       type: Rectangle
       parameters: [1, 0, 0, *width, *width] #target
     programs:
       - *program
+      - *extractor
     contents:
+      - molecule: min
+        concentration: 0.0
       - molecule: target
         concentration: 1.0
       - molecule: y
