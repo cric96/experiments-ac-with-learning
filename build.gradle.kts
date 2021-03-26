@@ -94,6 +94,7 @@ fun makeTest(
         file: String,
         name: String = file,
         sampling: Double = 1.0,
+        effect : String = "",
         time: Double = Double.POSITIVE_INFINITY,
         vars: Set<String> = setOf(),
         maxHeap: Long? = null,
@@ -144,6 +145,10 @@ fun makeTest(
 
         if (vars.isNotEmpty()) {
             args("-b", "-var", *vars.toTypedArray(), "--headless")
+        }
+
+        if(effect != "") {
+            args("-g", "./src/main/resources/${effect}.aes")
         }
     }
     /*tasks {
