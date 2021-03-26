@@ -39,8 +39,8 @@ dependencies {
 }
 
 tasks.withType<ScalaCompile> {
-    sourceCompatibility = "1.8"
-    targetCompatibility = "1.8"
+    sourceCompatibility = "1.11"
+    targetCompatibility = "1.11"
 }
 
 idea {
