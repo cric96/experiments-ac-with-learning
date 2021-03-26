@@ -12,7 +12,7 @@ class HopCountOracle
     with StandardSensors
     with ScafiAlchemistSupport {
 
-  type Hop = Int
+  type Hop = Double
   type VisitNode = (Node[Any], Hop)
   lazy val me: Node[Any] = alchemistEnvironment.getNodeByID(mid())
   override def main(): Int = {
@@ -57,5 +57,5 @@ class HopCountOracle
   }
 
   private def target(node: Node[Any]): Boolean =
-    new SimpleNodeManager[Any](node).get[Double]("target") == 0.0
+    new SimpleNodeManager[Any](node).get[Double]("target") == 1.0
 }

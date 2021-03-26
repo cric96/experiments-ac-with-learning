@@ -4,18 +4,20 @@ variables:
     max: 2
     step: 1
     default: 2
+
   range: &range
-    formula: 350
+    formula: 100
     language: js
+
+  width: &width
+    formula: 500
+
+  nodes: &nodes
+    formula: 150
+
 
 export:
   - time
-  - molecule: g
-    aggregators: [sum]
-    value-filter: onlyfinite
-  - molecule: g
-    aggregators: [mean]
-    value-filter: onlyfinite
 
 seeds:
   scenario: *random
@@ -39,16 +41,22 @@ pools:
       type: Event
       actions:
         - type: RunScafiProgram
-          parameters: [it.unibo.simulations.MyAggregateProgram, 5.0] # second argument is retention time
+          parameters: [it.unibo.simulations.HopCountOracle, 5.0] # second argument is retention time
     - program: send
 displacements:
   - in:
-      type: Grid
-      parameters: [0, 0, 200, 80, 10, 10, 1, 1]
+      type: Rectangle
+      parameters: [*nodes, 0, 0, *width, *width] #all nodes
     programs:
       - *program
     contents:
-      - molecule: test
-        concentration: true
-      - molecule: g
-        concentration: Double.PositiveInfinity
+      - molecule: target
+        concentration: 0.0
+  - in:
+      type: Rectangle
+      parameters: [1, 0, 0, *width, *width] #target
+    programs:
+      - *program
+    contents:
+      - molecule: target
+        concentration: 1.0

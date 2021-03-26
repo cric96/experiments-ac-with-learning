@@ -11,7 +11,6 @@ class HopCountRegression extends AggregateProgram with StandardSensors {
     read
       .xstream(Path.of(getClass.getResource("/model").toURI))
       .asInstanceOf[LinearModel]
-  override type MainResult = Int
 
   override def main = {
     rep(Double.PositiveInfinity) { data =>
