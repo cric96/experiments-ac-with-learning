@@ -5,4 +5,6 @@ with AI techniques.
 
 Each experiment is self-contained in a branch. The branch name tries to clarify the experiment extent (e.g. gradient-regression).
 
-In the main branch, I try to maintain the list of experiments done with their status / important things discovered.
+A branch that ends with *primer* contains basic configuration for a certain technology/framework
+
+In the main branch, I try to maintain the list of experiments done with their status/important things discovered.
