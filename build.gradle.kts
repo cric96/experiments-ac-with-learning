@@ -164,6 +164,6 @@ fun makeTest(
 
 makeTest(name="simulationGUI", file = "simulation", effect = "effect")
 makeTest(name="simulation", file = "simulation", time = 11.0, vars = setOf("random"), threads = 1)
-makeTest(name="helloGUI", file = "simulation")
+makeTest(name="validationGUI", file = "validation", effect = "effect")
 
 defaultTasks("fatJar")

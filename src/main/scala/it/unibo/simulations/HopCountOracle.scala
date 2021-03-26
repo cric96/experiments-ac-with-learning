@@ -14,6 +14,7 @@ class HopCountOracle
 
   type Hop = Double
   type VisitNode = (Node[Any], Hop)
+  private val delta = 50
   lazy val me: Node[Any] = alchemistEnvironment.getNodeByID(mid())
   override def main(): Int = {
     rep(Double.PositiveInfinity) { data =>
@@ -22,7 +23,7 @@ class HopCountOracle
       node.put("status", sense[Double]("target"))
       val result = guess(min)
       node.put("y", result)
-      node.put("color", result * 50)
+      node.put("color", result * delta)
       result
     }.toInt
 

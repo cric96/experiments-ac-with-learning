@@ -2,12 +2,12 @@ package it.unibo.learning
 import smile.data.Tuple
 import smile.data.`type`.{DataTypes, StructField, StructType}
 import smile.data.formula._
-import smile.read
+import smile.{read, write}
 import smile.regression._
 
 import scala.language.postfixOps
 
-object LinearModel extends App {
+object RidgeModel extends App {
   val input = read.csv(
     file = "output.csv",
     schema = new StructType(
@@ -29,7 +29,7 @@ object LinearModel extends App {
   def createTest(in: Double): Tuple = createTuple(0, in)
 
   def createSource(in: Double): Tuple = createTuple(1.0, in)
-
+  write.xstream(model, "src/main/resources/model")
   //it learns min + 1:
   println(model.predict(createTest(1.0)))
   println(model.predict(createTest(100.0)))

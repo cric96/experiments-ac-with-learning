@@ -1,21 +1,23 @@
 variables:
   random: &random
     min: 0
-    max: 2
+    max: 5
     step: 1
     default: 2
+
   range: &range
-    formula: 350
+    formula: 80
     language: js
+
+  width: &width
+    formula: 500
+
+  nodes: &nodes
+    formula: 150
+
 
 export:
   - time
-  - molecule: g
-    aggregators: [sum]
-    value-filter: onlyfinite
-  - molecule: g
-    aggregators: [mean]
-    value-filter: onlyfinite
 
 seeds:
   scenario: *random
@@ -33,22 +35,46 @@ network-model:
 
 pools:
   - pool: &program
-    - time-distribution:
-        type: ExponentialTime
-        parameters: [1]
-      type: Event
-      actions:
-        - type: RunScafiProgram
-          parameters: [it.unibo.simulations.MyAggregateProgram, 5.0] # second argument is retention time
-    - program: send
+      - time-distribution:
+          type: ExponentialTime
+          parameters: [1]
+        type: Event
+        actions:
+          - type: RunScafiProgram
+            parameters: [it.unibo.casestudy.HopCountRegression, 5.0] # second argument is retention time
+      - program: send
+  - pool: &extractor
+      - time-distribution:
+          type: DiracComb
+          parameters: [0.1]
+        type: Event
+        actions:
+          - type: ExtractCsv
 displacements:
   - in:
-      type: Grid
-      parameters: [0, 0, 200, 80, 10, 10, 1, 1]
+      type: Rectangle
+      parameters: [*nodes, 0, 0, *width, *width] #all nodes
     programs:
       - *program
     contents:
-      - molecule: test
-        concentration: true
-      - molecule: g
-        concentration: Double.PositiveInfinity
+      - molecule: target
+        concentration: 0.0
+      - molecule: y
+        concentration: 0.0
+      - molecule: min
+        concentration: 0.0
+
+  - in:
+      type: Rectangle
+      parameters: [1, 0, 0, *width, *width] #target
+    programs:
+      - *program
+      # - *extractor
+    contents:
+      - molecule: min
+        concentration: 0.0
+      - molecule: target
+        concentration: 1.0
+      - molecule: y
+        concentration: 0.0
+
