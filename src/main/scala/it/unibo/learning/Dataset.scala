@@ -8,6 +8,9 @@ import smile.data.formula._
 import scala.language.postfixOps
 
 object Dataset {
+  implicit class RichTuple(tuple: Tuple) {
+    def min: Double = tuple.getDouble("min")
+  }
   val schema: StructType = new StructType(
     new StructField("y", DataTypes.DoubleType),
     new StructField("target", DataTypes.DoubleType),
