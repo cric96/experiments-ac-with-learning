@@ -144,11 +144,7 @@ def merge_samples(contents, configs):
 
 def plot(config,content,nf,pformat):
   title = list(map("=".join,config))
-  if doWrap is not None: title = wrap("    ".join(title), 30)
-  title = "\n".join([s.strip() for k,s in enumerate(title) if k not in excluded_titles[nf]])
-  parts_suffix = "_".join(map("-".join,config))
-
-  plt.figure() # (figsize=(10,10), dpi=80)
+  if doWrap is not None: title = wrap("    ".join(title), 30)result
   plt.xlabel(the_plots_labels[pformat[0]])
   plt.ylabel(y_labels[nf] if len(y_labels)>nf else "")
   maxy = float("-inf")

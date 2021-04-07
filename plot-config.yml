@@ -6,6 +6,8 @@ the_plots_labels:
   - 'ridge'
   - 'gradient boost'
 
+format : png
+
 the_plots_formats: # a list of plot format. Each format is a list of field index that you want to show in the plot. A line define an "experiment"
   - [0, 1, 2, 3, 4, 5] #a plot with Time, gradient and gradient(avg)
   #- [0,11,12,13] ---> you can add multiple formats
