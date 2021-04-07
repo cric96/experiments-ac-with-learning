@@ -14,5 +14,5 @@ In the main branch, I try to maintain the list of experiments done with their st
 This branch contains the experiment in which I try to learn the hop count function using a standard regressor. This is the first attempt to mix AC with standard ML technique, so it is a only a PoF.
 ### :yellow_circle: Status 
 On validation.
-#### :black_circle: Things discovered
+### :black_circle: Things discovered
 Nothing special. Please refer to the [README](https://github.com/cric96/experiments-ac-with-learning/tree/hop-count-regression#readme) in the hop count branch.
