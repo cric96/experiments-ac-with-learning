@@ -68,11 +68,12 @@ What is difficult for us is to understand the transient. We know how to evaluate
 
 *What model could be more appropriate for learning AC function?*
 
-In general, we cannot presume that we always can extract a singualar (or fixed) data from the neighbour.
-All traditional ML techinques suppose that the input is fixed. 
-So, I immagine that we need to use novel techinque like RNN.
+In general, we cannot presume that we can always extract singular (or fixed) data from the neighbor.
+All traditional ML techniques suppose that the input is fixed. 
+So, I imagine that we need to use novel techniques like RNN.
 
-*What is intrique*
-If we can find a way to learn from example, we can execute simulation in little network, and teorically scale up to large-scale system, that is a very interisting perspective to our research.
+*What is intrigued*
+
+If we find a way to learn from example, we can execute simulations in little networks. Then we theoretically scale up to a large-scale system. That is a very interesting perspective for our research.
 
 
