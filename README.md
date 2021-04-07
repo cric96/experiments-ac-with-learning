@@ -75,5 +75,3 @@ So, I imagine that we need to use novel techniques like RNN.
 *What is intrigued*
 
 If we find a way to learn from example, we can execute simulations in little networks. Then we theoretically scale up to a large-scale system. That is a very interesting perspective for our research.
-
-
