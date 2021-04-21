@@ -1,4 +1,5 @@
 package it.unibo.simulations
+
 import it.unibo.alchemist.model.implementations.nodes.SimpleNodeManager
 import it.unibo.alchemist.model.interfaces.Node
 import it.unibo.alchemist.model.scafi.ScafiIncarnationForAlchemist._
@@ -7,15 +8,13 @@ import scala.annotation.tailrec
 import scala.collection.immutable.Queue
 import scala.jdk.CollectionConverters._
 
-class HopCountOracle
-    extends AggregateProgram
-    with StandardSensors
-    with ScafiAlchemistSupport {
+class HopCountOracle extends AggregateProgram with StandardSensors with ScafiAlchemistSupport {
 
-  type Hop = Double
+  type Hop       = Double
   type VisitNode = (Node[Any], Hop)
-  private val delta = 50
+  private val delta      = 50
   lazy val me: Node[Any] = alchemistEnvironment.getNodeByID(mid())
+
   override def main(): Int = {
     rep(Double.PositiveInfinity) { data =>
       val min = minHoodPlus(nbr(data))
@@ -36,9 +35,11 @@ class HopCountOracle
   }
 
   @tailrec
-  private def breadthVisit(frontier: Queue[VisitNode],
-                           visited: Set[Node[Any]] = Set.empty,
-                           findCondition: Node[Any] => Boolean): Option[Hop] = {
+  private def breadthVisit(
+      frontier: Queue[VisitNode],
+      visited: Set[Node[Any]] = Set.empty,
+      findCondition: Node[Any] => Boolean
+  ): Option[Hop] = {
     frontier.headOption match {
       case None                                     => None
       case Some((node, hop)) if findCondition(node) => Some(hop)
@@ -51,7 +52,7 @@ class HopCountOracle
           .asScala
           .toList
         val neighbourToVisit = neighbour.filterNot(visited.contains)
-        val visitedUpdated = visited ++ neighbourToVisit
+        val visitedUpdated   = visited ++ neighbourToVisit
         val queueUpdated: Queue[VisitNode] = frontier.tail ++ neighbourToVisit
           .map(node => (node, next))
         breadthVisit(queueUpdated, visitedUpdated, findCondition)

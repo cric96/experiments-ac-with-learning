@@ -7,9 +7,7 @@ import smile.regression._
 object ModelExports extends App {
   val baseFolder = "src/main/resources/"
 
-  def evalAndStore(name: String,
-                   model: => DataFrameRegression,
-                   input: DataFrame): Unit = {
+  def evalAndStore(name: String, model: => DataFrameRegression, input: DataFrame): Unit = {
     println(s"$name MSE = ${model.mse(input)}")
     model.store(s"$baseFolder$name")
   }
@@ -17,15 +15,15 @@ object ModelExports extends App {
   val input = Dataset.load("output.csv")
 
   val regressors: Map[String, DataFrameRegression] = Map(
-    "linear" -> lm(Dataset.formula, input),
-    "ridge" -> ridge(Dataset.formula, input, 0.0001),
-    "lasso" -> lasso(Dataset.formula, input, 0.001),
-    "cart" -> cart(Dataset.formula, input),
-    "random_forest" -> randomForest(Dataset.formula, input),
-    "gradient_boost" -> gbm(Dataset.formula, input),
+    "linear"         -> lm(Dataset.formula, input),
+    "ridge"          -> ridge(Dataset.formula, input, 0.0001),
+    "lasso"          -> lasso(Dataset.formula, input, 0.001),
+    "cart"           -> cart(Dataset.formula, input),
+    "random_forest"  -> randomForest(Dataset.formula, input),
+    "gradient_boost" -> gbm(Dataset.formula, input)
   )
 
-  regressors.foreach {
-    case (name, regression) => evalAndStore(name, regression, input)
+  regressors.foreach { case (name, regression) =>
+    evalAndStore(name, regression, input)
   }
 }

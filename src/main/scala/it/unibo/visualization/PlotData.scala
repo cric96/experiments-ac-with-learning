@@ -1,17 +1,21 @@
 package it.unibo.visualization
-import smile.data.`type`.{DataTypes, StructField, StructType}
+
+import smile.data.`type`.DataTypes
+import smile.data.`type`.StructField
+import smile.data.`type`.StructType
 import smile.plot.Render.renderCanvas
 import smile.plot._
 import smile.plot.swing._
 import smile.read
 
 object PlotData extends App {
+
   val input = read.csv(
     file = "output.csv",
     schema = new StructType(
       new StructField("y", DataTypes.DoubleType),
       new StructField("target", DataTypes.DoubleType),
-      new StructField("min", DataTypes.DoubleType),
+      new StructField("min", DataTypes.DoubleType)
     )
   )
   val x = input.select(0, 1, 2).toArray

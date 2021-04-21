@@ -1,9 +1,8 @@
 package it.unibo.learning
+
 import smile.data.Tuple
-import smile.data.`type`.{DataTypes, StructField, StructType}
-import smile.data.formula._
-import smile.{read, write}
 import smile.regression._
+import smile.write
 
 import scala.language.postfixOps
 
