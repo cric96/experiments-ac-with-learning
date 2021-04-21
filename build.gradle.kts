@@ -36,6 +36,9 @@ dependencies {
     implementation("org.bytedeco:arpack-ng:3.7.0-1.5.4:linux-x86_64")
     implementation("org.bytedeco:arpack-ng:3.7.0-1.5.4:windows-x86_64")
     implementation("org.bytedeco:arpack-ng:3.7.0-1.5.4:macosx-x86_64")
+    //deep learning libraries
+    implementation("org.deeplearning4j:deeplearning4j-core:1.0.0-beta7")
+    implementation("org.nd4j:nd4j-native-platform:1.0.0-beta7")
 }
 
 tasks.withType<ScalaCompile> {
