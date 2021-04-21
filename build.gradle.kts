@@ -20,8 +20,11 @@ dependencies {
     implementation("it.unibo.alchemist:alchemist-swingui:10.0.1") //without this dependency, the simulation doesn't produce data
     implementation("it.unibo.alchemist:alchemist-incarnation-scafi:10.0.1")
     implementation("org.scala-lang:scala-library:2.13.2")
+    //scafi
     implementation("it.unibo.scafi:scafi-core_2.13:0.3.3")
-
+    //deeplearning 4 java
+    implementation("org.deeplearning4j:deeplearning4j-core:1.0.0-beta7")
+    implementation("org.nd4j:nd4j-native-platform:1.0.0-beta7")
     /*
     implementation("com.github.cb372:scalacache-guava_2.12:0.9.3")
     implementation("org.danilopianini:thread-inheritable-resource-loader:0.3.2")
