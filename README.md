@@ -25,8 +25,10 @@ I have tried to train:
 - linear regressor;
 - gradient regressor;
 - random forest regressor.
+- a neural network
 
 Considering the learning algorithm's simplicity, I choose the smile framework to validate the result.
+I also include a neural network model only to check how to integrate Deep learning 4 j.
 #### Validation configuration
 To validate the result (program [PerformanceComparator](src/main/scala/it/unibo/casestudy/PerformanceComparator.scala) configuration [multi_validation.yml](src/main/yaml/multi_validation.yml) I run standard hop count implementation and another regression model. Here, I have decided to increment the node count to see if the model succeeded in the generalization task. The error is computed as a squared error for each time sample.
 #### What happens
