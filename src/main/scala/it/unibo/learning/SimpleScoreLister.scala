@@ -7,6 +7,6 @@ class SimpleScoreLister extends BaseTrainingListener {
 
   override def iterationDone(model: Model, iteration: Int, epoch: Int): Unit = {
     val score = model.score
-    println(s"Score at iteration $iteration is $score")
+    println(s"Score at iteration $iteration is $score;; epoch $epoch")
   }
 }

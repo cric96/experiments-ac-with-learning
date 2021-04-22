@@ -1,5 +1,6 @@
 package it.unibo.learning
 
+import org.deeplearning4j.datasets.iterator.impl.ListDataSetIterator
 import org.deeplearning4j.nn.conf.BackpropType
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration
@@ -7,6 +8,7 @@ import org.deeplearning4j.nn.conf.inputs.InputType
 import org.deeplearning4j.nn.conf.layers.DenseLayer
 import org.deeplearning4j.nn.conf.layers.OutputLayer
 import org.nd4j.linalg.activations.Activation
+import org.nd4j.linalg.dataset.api.iterator.DataSetIterator
 import org.nd4j.linalg.learning.config.Adam
 import org.nd4j.linalg.dataset.{DataSet => JDataSet}
 import org.nd4j.linalg.lossfunctions.LossFunctions
@@ -39,4 +41,7 @@ object DeepNetworks {
       .setInputType(InputType.feedForward(inputSize))
       .build()
   }
+
+  def wrapDataSetToIterator(dataset: JDataSet, batchSize: Int = 32): DataSetIterator =
+    new ListDataSetIterator(dataset.asList(), batchSize)
 }
