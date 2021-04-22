@@ -1,5 +1,7 @@
 package it.unibo.learning
 
+import org.nd4j.linalg.api.ndarray.INDArray
+import org.nd4j.linalg.cpu.nativecpu.NDArray
 import smile.data.DataFrame
 import smile.data.Tuple
 import smile.data.`type`.DataTypes
@@ -14,7 +16,8 @@ import scala.language.postfixOps
 object Dataset {
 
   implicit class RichTuple(tuple: Tuple) {
-    def min: Double = tuple.getDouble("min")
+    def min: Double         = tuple.getDouble("min")
+    def asNDArray: INDArray = new NDArray(Array(tuple.getDouble("target").toFloat, tuple.min.toFloat))
   }
 
   val schema: StructType = new StructType(

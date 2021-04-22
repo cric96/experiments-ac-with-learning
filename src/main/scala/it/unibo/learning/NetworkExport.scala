@@ -14,8 +14,13 @@ import org.deeplearning4j.earlystopping.termination.MaxTimeIterationTerminationC
 import org.deeplearning4j.earlystopping.termination.ScoreImprovementEpochTerminationCondition
 import org.deeplearning4j.earlystopping.trainer.EarlyStoppingTrainer
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
+import org.deeplearning4j.ui.api.UIServer
 import org.nd4j.evaluation.regression.RegressionEvaluation
 import org.nd4j.linalg.cpu.nativecpu.NDArray
+import org.deeplearning4j.core.storage.StatsStorage
+import org.deeplearning4j.ui.model.storage.InMemoryStatsStorage
+import org.deeplearning4j.ui.model.stats.StatsListener
+import org.deeplearning4j.util.ModelSerializer
 
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -61,6 +66,7 @@ object NetworkExport extends App {
     DataSetSplit(train, validation, test)
   }
 
+  //dataset preparation
   val dataset =
     prepareDataset(
       "output.csv",
@@ -71,8 +77,14 @@ object NetworkExport extends App {
     )
   val trainIterator      = DeepNetworks.wrapDataSetToIterator(dataset.trainingSet)
   val validationIterator = DeepNetworks.wrapDataSetToIterator(dataset.validationSet)
+  //network configuration
   network.init()
-  network.setListeners(new SimpleScoreLister)
+  //gui configuration
+  val uiServer     = UIServer.getInstance()
+  val statsStorage = new InMemoryStatsStorage
+  uiServer.attach(statsStorage)
+  //add listener
+  network.setListeners(new SimpleScoreLister, new StatsListener(statsStorage))
   //in-memory directory
   val tempDir: String          = System.getProperty("java.io.tmpdir")
   val exampleDirectory: String = FilenameUtils.concat(tempDir, "DL4JEarlyStoppingExample/")
@@ -81,6 +93,7 @@ object NetworkExport extends App {
   //model saver for early stopping cycle
   val saver = new LocalFileModelSaver(exampleDirectory)
 
+  //early stopping configuration
   val esConf = new EarlyStoppingConfiguration.Builder()
     .epochTerminationConditions(
       new MaxEpochsTerminationCondition(epoch),
@@ -91,16 +104,19 @@ object NetworkExport extends App {
     .evaluateEveryNEpochs(1)
     .modelSaver(saver)
     .build()
-
+  //train
   val trainer = new EarlyStoppingTrainer(esConf, network, trainIterator)
   trainer.fit()
+  //evaluation
   val evaluation = new RegressionEvaluation()
   evaluation.eval(dataset.testSet.getLabels, network.output(dataset.testSet.getFeatures))
   println(evaluation.stats())
+  //some additional test
   println(network.feedForward(new NDArray(Array(0.0f, 0.0f))))
   println(network.feedForward(new NDArray(Array(0.0f, 1.0f))))
   println(network.feedForward(new NDArray(Array(0.0f, 10.0f))))
   println(network.feedForward(new NDArray(Array(0.0f, 100.0f))))
   println(network.feedForward(new NDArray(Array(0.0f, 1000.0f))))
   println(network.feedForward(new NDArray(Array(0.0f, 5000.0f))))
+  ModelSerializer.writeModel(network, "network", false)
 }

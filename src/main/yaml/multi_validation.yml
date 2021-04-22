@@ -33,6 +33,9 @@ export:
   - molecule: gradientBoost
     value-filter: onlyfinite
     aggregators: [mean]
+  - molecule: network
+    value-filter: onlyfinite
+    aggregators: [ mean ]
 
 seeds:
   scenario: *random
@@ -81,13 +84,13 @@ displacements:
         concentration: 0.0
       - molecule: gradientBoost
         concentration: 0.0
-
+      - molecule: network
+        concentration: 0.0
   - in:
       type: Rectangle
       parameters: [1, 0, 0, *width, *width] #target
     programs:
       - *program
-
     contents:
       - molecule: min
         concentration: 0.0
@@ -104,5 +107,7 @@ displacements:
       - molecule: ridge
         concentration: 0.0
       - molecule: gradientBoost
+        concentration: 0.0
+      - molecule: network
         concentration: 0.0
 
