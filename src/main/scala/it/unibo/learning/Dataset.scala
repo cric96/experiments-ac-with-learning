@@ -11,8 +11,6 @@ import smile.data.formula.Formula
 import smile.data.formula._
 import smile.read
 
-import scala.language.postfixOps
-
 object Dataset {
 
   implicit class RichTuple(tuple: Tuple) {
@@ -39,6 +37,6 @@ object Dataset {
   def load(file: String): DataFrame =
     read.csv(file = file, schema = Dataset.schema)
 
-  val formula: Formula = "y" ~
+  val formula: Formula = "y".~()
 
 }

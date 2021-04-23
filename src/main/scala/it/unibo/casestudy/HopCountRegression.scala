@@ -15,7 +15,7 @@ class HopCountRegression extends AggregateProgram with StandardSensors with Scaf
       .asInstanceOf[DataFrameRegression]
   private val delta = 50
 
-  override def main = {
+  override def main(): Double = {
     rep(Double.PositiveInfinity) { data =>
       val minData = minHood(nbr(data))
       val tuple   = Dataset.createTuple(target, minData)

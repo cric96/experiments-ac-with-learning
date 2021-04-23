@@ -4,10 +4,12 @@ import it.unibo.learning.RegressionImplicits.RichRegression
 import smile.data.DataFrame
 import smile.regression._
 
+import scala.util.Try
+
 object ModelExports extends App {
   val baseFolder = "src/main/resources/"
 
-  def evalAndStore(name: String, model: => DataFrameRegression, input: DataFrame): Unit = {
+  def evalAndStore(name: String, model: => DataFrameRegression, input: DataFrame): Try[Unit] = {
     println(s"$name MSE = ${model.mse(input)}")
     model.store(s"$baseFolder$name")
   }

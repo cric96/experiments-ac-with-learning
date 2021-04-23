@@ -14,9 +14,11 @@ import org.nd4j.linalg.dataset.{DataSet => JDataSet}
 import org.nd4j.linalg.lossfunctions.LossFunctions
 
 object DeepNetworks {
+  //utility case class
   case class Seed(value: Long)
   case class DataSetSplit(trainingSet: JDataSet, validationSet: JDataSet, testSet: JDataSet)
 
+  //function to create a multi layer network with regression task
   def multiLayerRegressionConfiguration(
       inputSize: Int,
       outputSize: Int,
@@ -31,7 +33,6 @@ object DeepNetworks {
       .nIn(hidden.reverse.head)
       .nOut(outputSize)
       .build()
-
     val layers = hiddenLayers ::: output :: Nil
     new NeuralNetConfiguration.Builder() //hyper parameter section
       .seed(seed.value)
@@ -42,6 +43,7 @@ object DeepNetworks {
       .build()
   }
 
+  //utility function that wrap a DataSet (Deeplearning4j) into a DataSetIterator
   def wrapDataSetToIterator(dataset: JDataSet, batchSize: Int = 32): DataSetIterator =
     new ListDataSetIterator(dataset.asList(), batchSize)
 }

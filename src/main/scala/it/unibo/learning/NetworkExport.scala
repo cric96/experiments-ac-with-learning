@@ -6,26 +6,24 @@ import org.apache.commons.io.FilenameUtils
 import org.datavec.api.records.reader.impl.csv.CSVRecordReader
 import org.datavec.api.split.FileSplit
 import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator
-import org.deeplearning4j.earlystopping.EarlyStoppingConfiguration
 import org.deeplearning4j.earlystopping.saver.LocalFileModelSaver
 import org.deeplearning4j.earlystopping.scorecalc.DataSetLossCalculator
 import org.deeplearning4j.earlystopping.termination.MaxEpochsTerminationCondition
-import org.deeplearning4j.earlystopping.termination.MaxTimeIterationTerminationCondition
 import org.deeplearning4j.earlystopping.termination.ScoreImprovementEpochTerminationCondition
 import org.deeplearning4j.earlystopping.trainer.EarlyStoppingTrainer
+import org.deeplearning4j.earlystopping.EarlyStoppingConfiguration
+import org.deeplearning4j.earlystopping.EarlyStoppingModelSaver
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
 import org.deeplearning4j.ui.api.UIServer
-import org.nd4j.evaluation.regression.RegressionEvaluation
-import org.nd4j.linalg.cpu.nativecpu.NDArray
-import org.deeplearning4j.core.storage.StatsStorage
-import org.deeplearning4j.ui.model.storage.InMemoryStatsStorage
 import org.deeplearning4j.ui.model.stats.StatsListener
+import org.deeplearning4j.ui.model.storage.InMemoryStatsStorage
 import org.deeplearning4j.util.ModelSerializer
+import org.nd4j.evaluation.regression.RegressionEvaluation
+import org.nd4j.linalg.dataset.api.iterator.DataSetIterator
 
 import java.io.File
-import java.util.concurrent.TimeUnit
 
-object NetworkExport extends App {
+object NetworkExport {
   implicit val seed: Seed = Seed(42)
   //network configuration
   private val inputSize  = 2
@@ -36,12 +34,42 @@ object NetworkExport extends App {
   private val epoch           = 1000
   private val patience        = 10
   private val batchSize       = 1000
+  private val splitValidation = 0.2
+  private val splitTest       = 0.1
+
+  //dataset preparation
+  private val dataset =
+    prepareDataset(
+      "output.csv",
+      splitValidation = splitValidation,
+      splitTest = splitTest,
+      batchSize = batchSize,
+      labelRegressionRange = (regressionIndex, regressionIndex)
+    )
+  private val trainIterator      = DeepNetworks.wrapDataSetToIterator(dataset.trainingSet)
+  private val validationIterator = DeepNetworks.wrapDataSetToIterator(dataset.validationSet)
 
   //neural network
-  val configuration = DeepNetworks
+  private val configuration = DeepNetworks
     .multiLayerRegressionConfiguration(inputSize, outputSize, hidden)
   private val network = new MultiLayerNetwork(configuration)
 
+  def main(args: Array[String]): Unit = {
+    //network initialization
+    network.init()
+    attachUIServer(network)
+    //train
+    val trainer = configureTrainer(network, epoch, patience, validationIterator, trainIterator)
+    trainer.fit()
+    //evaluation
+    val evaluation = new RegressionEvaluation()
+    evaluation.eval(dataset.testSet.getLabels, network.output(dataset.testSet.getFeatures))
+    println(evaluation.stats())
+    //store
+    ModelSerializer.writeModel(network, "network", false)
+  }
+
+  //utility functions
   private def isProbability(data: Double): Boolean = data >= 0 && data <= 1
 
   private def prepareDataset(
@@ -66,57 +94,43 @@ object NetworkExport extends App {
     DataSetSplit(train, validation, test)
   }
 
-  //dataset preparation
-  val dataset =
-    prepareDataset(
-      "output.csv",
-      splitValidation = 0.2,
-      splitTest = 0.1,
-      batchSize = batchSize,
-      labelRegressionRange = (regressionIndex, regressionIndex)
-    )
-  val trainIterator      = DeepNetworks.wrapDataSetToIterator(dataset.trainingSet)
-  val validationIterator = DeepNetworks.wrapDataSetToIterator(dataset.validationSet)
-  //network configuration
-  network.init()
-  //gui configuration
-  val uiServer     = UIServer.getInstance()
-  val statsStorage = new InMemoryStatsStorage
-  uiServer.attach(statsStorage)
-  //add listener
-  network.setListeners(new SimpleScoreLister, new StatsListener(statsStorage))
-  //in-memory directory
-  val tempDir: String          = System.getProperty("java.io.tmpdir")
-  val exampleDirectory: String = FilenameUtils.concat(tempDir, "DL4JEarlyStoppingExample/")
-  val dirFile: File            = new File(exampleDirectory)
-  dirFile.mkdir()
-  //model saver for early stopping cycle
-  val saver = new LocalFileModelSaver(exampleDirectory)
+  private def attachUIServer(network: MultiLayerNetwork): Unit = {
+    //gui configuration
+    val uiServer     = UIServer.getInstance()
+    val statsStorage = new InMemoryStatsStorage
+    uiServer.attach(statsStorage)
+    //add listener
+    network.setListeners(new SimpleScoreLister, new StatsListener(statsStorage))
+  }
 
-  //early stopping configuration
-  val esConf = new EarlyStoppingConfiguration.Builder()
-    .epochTerminationConditions(
-      new MaxEpochsTerminationCondition(epoch),
-      new ScoreImprovementEpochTerminationCondition(patience)
-    )
-    .iterationTerminationConditions(new MaxTimeIterationTerminationCondition(5, TimeUnit.MINUTES))
-    .scoreCalculator(new DataSetLossCalculator(validationIterator, true))
-    .evaluateEveryNEpochs(1)
-    .modelSaver(saver)
-    .build()
-  //train
-  val trainer = new EarlyStoppingTrainer(esConf, network, trainIterator)
-  trainer.fit()
-  //evaluation
-  val evaluation = new RegressionEvaluation()
-  evaluation.eval(dataset.testSet.getLabels, network.output(dataset.testSet.getFeatures))
-  println(evaluation.stats())
-  //some additional test
-  println(network.feedForward(new NDArray(Array(0.0f, 0.0f))))
-  println(network.feedForward(new NDArray(Array(0.0f, 1.0f))))
-  println(network.feedForward(new NDArray(Array(0.0f, 10.0f))))
-  println(network.feedForward(new NDArray(Array(0.0f, 100.0f))))
-  println(network.feedForward(new NDArray(Array(0.0f, 1000.0f))))
-  println(network.feedForward(new NDArray(Array(0.0f, 5000.0f))))
-  ModelSerializer.writeModel(network, "network", false)
+  private def configureTrainer(
+      network: MultiLayerNetwork,
+      epochCount: Int,
+      patience: Int,
+      validationSet: DataSetIterator,
+      trainingSet: DataSetIterator
+  ): EarlyStoppingTrainer = {
+    val modelSaver = configureModelSaver
+    //early stopping configuration
+    val esConf = new EarlyStoppingConfiguration.Builder()
+      .epochTerminationConditions(
+        new MaxEpochsTerminationCondition(epochCount),
+        new ScoreImprovementEpochTerminationCondition(patience)
+      )
+      .scoreCalculator(new DataSetLossCalculator(validationSet, true))
+      .evaluateEveryNEpochs(1)
+      .modelSaver(modelSaver)
+      .build()
+    new EarlyStoppingTrainer(esConf, network, trainingSet)
+  }
+
+  private def configureModelSaver: EarlyStoppingModelSaver[MultiLayerNetwork] = {
+    //in-memory directory
+    val tempDir: String          = System.getProperty("java.io.tmpdir")
+    val exampleDirectory: String = FilenameUtils.concat(tempDir, "DL4JEarlyStoppingExample/")
+    val dirFile: File            = new File(exampleDirectory)
+    dirFile.mkdir()
+    //model saver for early stopping cycle
+    new LocalFileModelSaver(exampleDirectory)
+  }
 }

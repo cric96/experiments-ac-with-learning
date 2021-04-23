@@ -4,8 +4,6 @@ import smile.data.Tuple
 import smile.regression._
 import smile.write
 
-import scala.language.postfixOps
-
 object RidgeModel extends App {
   import RegressionImplicits._
 

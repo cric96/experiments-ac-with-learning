@@ -20,7 +20,7 @@ class HopCountOracle extends AggregateProgram with StandardSensors with ScafiAlc
       val min = minHoodPlus(nbr(data))
       node.put("min", min)
       node.put("status", sense[Double]("target"))
-      val result = guess(min)
+      val result = guess
       node.put("y", result)
       node.put("color", result * delta)
       result
@@ -28,7 +28,7 @@ class HopCountOracle extends AggregateProgram with StandardSensors with ScafiAlc
 
   }
 
-  private def guess(data: Double): Double = {
+  private def guess: Double = {
     alchemistEnvironment.getNeighborhood(me)
     breadthVisit(Queue((me, 0)), Set(me), node => target(node))
       .getOrElse[Double](Double.PositiveInfinity)
