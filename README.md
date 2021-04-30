@@ -11,10 +11,10 @@ In the main branch, I try to maintain the list (ordered by date) of experiments 
 
 Here, each experiment is synthesis with:
 - the name that link to the branch
-- a brief description
+- a brief description of the experiment
 - a sentence that describes the goal
-- the status that could be in :red_circle: Doing, :yellow_circle: On Validation (i.e. wait the validation from @metaphori and @mviroli) and :green_circle: Done (the goal is achieved and is validated by the group)
-- things discovered with a description, and a color (:black_circle: -> nothing special, :yellow_circle: -> something interesting, :green_circle: -> valuable result / usable in a scientific article)
+- a status that could be in :red_circle: Doing, :yellow_circle: On Validation (i.e. wait the validation from @metaphori and @mviroli) and :green_circle: Done (the goal is achieved and is validated by the group)
+- things discovered with a *qualitative* description, and a color (:black_circle: -> nothing special, :yellow_circle: -> something interesting, :green_circle: -> valuable result / usable in a scientific article)
 
 
 
