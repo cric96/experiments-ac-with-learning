@@ -11,8 +11,10 @@ In the main branch, I try to maintain the list of experiments done with their st
 
 ## [Hop count regression](https://github.com/cric96/experiments-ac-with-learning/tree/hop-count-regression)
 
-This branch contains the experiment in which I try to learn the hop count function using a standard regressor. This is the first attempt to mix AC with standard ML technique, so it is a only a PoF.
-### :yellow_circle: Status 
-On validation.
+This branch contains the experiment in which I try to learn the hop count function using a standard regressor. 
+This is the first attempt to mix AC with standard ML technique, so it is only a PoF.
+As a simplification, we consider as input only the minimum value within the neighbour.
+### :green_circle: Status 
+Done.
 ### :black_circle: Things discovered
 Nothing special. Please refer to the [README](https://github.com/cric96/experiments-ac-with-learning/tree/hop-count-regression#readme) in the hop count branch.
