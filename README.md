@@ -12,7 +12,8 @@ In the main branch, I try to maintain the list (ordered by date) of experiments 
 Here, each experiment is synthesis with:
 - the name that link to the branch
 - a brief description
-- the status that could be in :red_circle:Doing, :yellow_circle:On Validation and :green_circle:Done
+- a sentence that describes the goal
+- the status that could be in :red_circle: Doing, :yellow_circle: On Validation (i.e. wait the validation from @metaphori and @mviroli) and :green_circle: Done (the goal is achieved and is validated by the group)
 - things discovered with a description, and a color (:black_circle: -> nothing special, :yellow_circle: -> something interesting, :green_circle: -> valuable result / usable in a scientific article)
 
 
@@ -22,6 +23,8 @@ Here, each experiment is synthesis with:
 This branch contains the experiment in which I try to learn the hop count function using a standard regressor. 
 This is the first attempt to mix AC with standard ML technique, so it is only a PoF.
 As a simplification, we consider as input only the minimum value within the neighbour.
+### *Goal*: 
+Take confidence with AC + ML creating a pipeline that will be reused in other examples.
 ### :green_circle: Status 
 Done.
 ### :black_circle: Things discovered
