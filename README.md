@@ -9,6 +9,13 @@ Each branch that ends with *primer* contains the basic configuration for a certa
 
 In the main branch, I try to maintain the list of experiments done with their status/important things discovered.
 
+Here, each experiment is synthesis with:
+- the name that link to the branch
+- a brief description
+- the status that could be in :red_circle:Doing, :yellow_circle:On Validation and :green_circle:Done
+- things discovered with a description, and a color (:black_circle: -> nothing special, :yellow_circle: -> something interesting, :green_circle: -> valuable result / usable in a scientific article)
+
+
 ## [Hop count regression](https://github.com/cric96/experiments-ac-with-learning/tree/hop-count-regression)
 
 This branch contains the experiment in which I try to learn the hop count function using a standard regressor. 
