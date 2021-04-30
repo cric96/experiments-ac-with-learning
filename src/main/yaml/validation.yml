@@ -1,3 +1,5 @@
+incarnation: scafi
+
 variables:
   random: &random
     min: 0
@@ -22,8 +24,6 @@ seeds:
   scenario: *random
   simulation: *random
 
-incarnation: scafi
-
 environment:
   type: Continuous2DEnvironment
   parameters: []
@@ -42,13 +42,6 @@ pools:
           - type: RunScafiProgram
             parameters: [it.unibo.casestudy.HopCountRegression, 5.0] # second argument is retention time
       - program: send
-  - pool: &extractor
-      - time-distribution:
-          type: DiracComb
-          parameters: [0.1]
-        type: Event
-        actions:
-          - type: ExtractCsv
 displacements:
   - in:
       type: Rectangle
@@ -68,7 +61,6 @@ displacements:
       parameters: [1, 0, 0, *width, *width] #target
     programs:
       - *program
-      # - *extractor
     contents:
       - molecule: min
         concentration: 0.0

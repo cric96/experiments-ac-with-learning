@@ -8,17 +8,20 @@ import java.io.FileOutputStream
 import java.io.PrintWriter
 import scala.jdk.CollectionConverters.IteratorHasAsScala
 
-class ExtractCsv[T, P <: Position[P]](val env: Environment[T, P], val node: Node[T]) extends AbstractAction[T](node) {
+class ExtractCsv[T, P <: Position[P]](val env: Environment[T, P], val node: Node[T], labels: List[String])
+    extends AbstractAction[T](node) {
 
   override def cloneAction(node: Node[T], reaction: Reaction[T]): Action[T] =
-    new ExtractCsv(env, node)
+    new ExtractCsv(env, node, labels)
 
   override def execute(): Unit = {
     if (env.getSimulation.getTime.toDouble > 0) {
       val elements = env.getNodes.iterator().asScala.toList
       val csv = elements
         .map(new SimpleNodeManager[T](_))
-        .map(node => s"${node.get[Double]("y")},${node.get[Double]("target")},${node.get[Double]("min")}")
+        .map { node =>
+          adjustValues(labels, node).map(_.toString).mkString(",")
+        }
         .mkString("\n")
       val pw = new PrintWriter(
         new FileOutputStream(new File("output.csv"), true)
@@ -28,4 +31,10 @@ class ExtractCsv[T, P <: Position[P]](val env: Environment[T, P], val node: Node
     }
   }
   override def getContext: Context = Context.GLOBAL
+
+  private def adjustValues(label: List[String], node: SimpleNodeManager[T]): List[Double] =
+    label.map(node.get[Double]).collect {
+      case value if value.isInfinity => Int.MaxValue.toDouble
+      case value                     => value
+    }
 }

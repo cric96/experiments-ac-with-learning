@@ -26,13 +26,13 @@ import java.io.File
 object NetworkExport {
   implicit val seed: Seed = Seed(42)
   //network configuration
-  private val inputSize  = 2
+  private val inputSize  = 5
   private val outputSize = 1
-  private val hidden     = 8 :: 6 :: 4 :: 2 :: Nil
+  private val hidden     = 128 :: 64 :: 32 :: Nil
   //dataset information
-  private val regressionIndex = 0
+  private val regressionIndex = 5
   private val epoch           = 1000
-  private val patience        = 10
+  private val patience        = 20
   private val batchSize       = 1000
   private val splitValidation = 0.2
   private val splitTest       = 0.1
@@ -66,7 +66,7 @@ object NetworkExport {
     evaluation.eval(dataset.testSet.getLabels, network.output(dataset.testSet.getFeatures))
     println(evaluation.stats())
     //store
-    ModelSerializer.writeModel(network, "network", false)
+    ModelSerializer.writeModel(network, "src/main/resources/network", false)
   }
 
   //utility functions

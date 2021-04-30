@@ -2,6 +2,11 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import java.io.ByteArrayOutputStream
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+//versions
+val alchemistVersion = "10.0.1"
+val scafiVersion = "0.3.3"
+val scalaMajor = "2.13"
+val scalaMinor = ".2"
 
 plugins {
     java
@@ -16,14 +21,14 @@ repositories {
 }
 
 dependencies {
-    implementation("it.unibo.scafi:scafi-core_2.13:0.3.3")
+    implementation("it.unibo.scafi:scafi-core_$scalaMajor:$scafiVersion")
     //alchemist and scafi dependency
-    implementation("it.unibo.alchemist:alchemist:10.0.1")
-    implementation("it.unibo.alchemist:alchemist-swingui:10.0.1") //without this dependency, the simulation doesn't produce data
-    implementation("it.unibo.alchemist:alchemist-incarnation-scafi:10.0.1")
-    implementation("org.scala-lang:scala-library:2.13.2")
+    implementation("it.unibo.alchemist:alchemist:$alchemistVersion")
+    implementation("it.unibo.alchemist:alchemist-swingui:$alchemistVersion") //without this dependency, the simulation doesn't produce data
+    implementation("it.unibo.alchemist:alchemist-incarnation-scafi:$alchemistVersion")
+    implementation("org.scala-lang:scala-library:$scalaMajor$scalaMinor")
     //ml dependency
-    implementation("com.github.haifengl:smile-scala_2.13:2.6.0")
+    implementation("com.github.haifengl:smile-scala_$scalaMajor:2.6.0")
     //native dependency for smile
     implementation("org.bytedeco:javacpp:1.5.4:linux-x86_64")
     implementation("org.bytedeco:javacpp:1.5.4:windows-x86_64")

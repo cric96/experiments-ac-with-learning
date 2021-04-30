@@ -2,6 +2,7 @@ package it.unibo.casestudy
 
 import it.unibo.alchemist.model.scafi.ScafiIncarnationForAlchemist.ScafiAlchemistSupport
 import it.unibo.alchemist.model.scafi.ScafiIncarnationForAlchemist._
+import it.unibo.common.StatisticsEvaluation
 import it.unibo.learning.Dataset
 import it.unibo.learning.Dataset._
 import org.deeplearning4j.util.ModelSerializer
@@ -11,14 +12,19 @@ import smile.regression.DataFrameRegression
 
 import java.nio.file.Path
 
-class PerformanceComparator extends AggregateProgram with StandardSensors with ScafiAlchemistSupport {
+class PerformanceComparator
+    extends AggregateProgram
+    with StandardSensors
+    with ScafiAlchemistSupport
+    with StatisticsEvaluation
+    with FieldUtils {
 
   private val linear        = loadRegression("linear")
   private val lasso         = loadRegression("lasso")
   private val randomForest  = loadRegression("random_forest")
   private val ridge         = loadRegression("ridge")
   private val gradientBoost = loadRegression("gradient_boost")
-  private val network       = ModelSerializer.restoreMultiLayerNetwork("network")
+  private val network       = ModelSerializer.restoreMultiLayerNetwork("src/main/resources/network")
 
   override def main(): Any = {
     val reference = hopCountLike(tuple => tuple.min + 1)
@@ -45,9 +51,10 @@ class PerformanceComparator extends AggregateProgram with StandardSensors with S
 
   private def hopCountLike(eval: Tuple => Double): Double =
     rep(Double.PositiveInfinity) { data =>
-      val minData = minHood(nbr(data))
-      val tuple   = Dataset.createTuple(target, minData)
-      val result  = Math.round(eval(tuple)).toInt
+      val index = extractStatisticsIndex(data)
+      val tuple =
+        Dataset.createTuple(index.min, index.max, index.avg, booleanEncoding(isTarget), booleanEncoding(!isTarget))
+      val result = Math.round(eval(tuple)).toInt
       mux(isTarget)(0)(result) //not right
     //right way : result
     }

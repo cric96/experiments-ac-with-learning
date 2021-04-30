@@ -15,6 +15,10 @@ variables:
   nodes: &nodes
     formula: 150
 
+  labels: &labels
+    formula: >
+      List("min", "max", "avg", "isTarget", "isNotTarget", "y")
+    language: scala
 
 export:
   - time
@@ -50,6 +54,7 @@ pools:
         type: Event
         actions:
           - type: ExtractCsv
+            parameters: [*labels]
 displacements:
   - in:
       type: Rectangle

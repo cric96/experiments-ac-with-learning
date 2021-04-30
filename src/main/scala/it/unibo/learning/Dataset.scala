@@ -13,24 +13,37 @@ import smile.read
 
 object Dataset {
 
-  implicit class RichTuple(tuple: Tuple) {
-    def min: Double         = tuple.getDouble("min")
-    def asNDArray: INDArray = new NDArray(Array(tuple.getDouble("target").toFloat, tuple.min.toFloat))
+  implicit class RichTuple(t: Tuple) {
+    def min: Double         = t.getDouble("min")
+    def max: Double         = t.getDouble("max")
+    def avg: Double         = t.getDouble("avg")
+    def isTarget: Double    = t.getDouble("isTarget")
+    def isNotTarget: Double = t.getDouble("isNotTarget")
+    def y: Double           = t.getDouble("y")
+    def asNDArray: INDArray = new NDArray(Array(t.min, t.max, t.avg, t.isTarget, t.isNotTarget).map(_.toFloat))
   }
 
   val schema: StructType = new StructType(
-    new StructField("y", DataTypes.DoubleType),
-    new StructField("target", DataTypes.DoubleType),
-    new StructField("min", DataTypes.DoubleType)
+    new StructField("min", DataTypes.DoubleType),
+    new StructField("max", DataTypes.DoubleType),
+    new StructField("avg", DataTypes.DoubleType),
+    new StructField("isTarget", DataTypes.DoubleType),
+    new StructField("isNotTarget", DataTypes.DoubleType),
+    new StructField("y", DataTypes.DoubleType)
   )
 
-  def createTuple(target: Double, minHop: Double): Tuple = {
+  val inputSchema: StructType = new StructType(schema.fields.reverse.tail.reverse: _*)
+
+  def createTuple(
+      min: Double,
+      max: Double,
+      avg: Double,
+      isTarget: Double,
+      isNotTarget: Double
+  ): Tuple = {
     Tuple.of(
-      Array[Double](target, minHop),
-      new StructType(
-        new StructField("target", DataTypes.DoubleType),
-        new StructField("min", DataTypes.DoubleType)
-      )
+      Array[Double](min, max, avg, isTarget, isNotTarget),
+      inputSchema
     )
   }
 

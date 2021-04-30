@@ -5,32 +5,65 @@
     </response>
     <predictors>
       <smile.data.formula.Variable>
-        <name>target</name>
+        <name>min</name>
       </smile.data.formula.Variable>
       <smile.data.formula.Variable>
-        <name>min</name>
+        <name>max</name>
+      </smile.data.formula.Variable>
+      <smile.data.formula.Variable>
+        <name>avg</name>
+      </smile.data.formula.Variable>
+      <smile.data.formula.Variable>
+        <name>isTarget</name>
+      </smile.data.formula.Variable>
+      <smile.data.formula.Variable>
+        <name>isNotTarget</name>
       </smile.data.formula.Variable>
     </predictors>
   </formula>
   <schema>
     <fields>
       <smile.data.type.StructField>
-        <name>target</name>
+        <name>min</name>
         <type class="smile.data.type.DoubleType"/>
       </smile.data.type.StructField>
       <smile.data.type.StructField>
-        <name>min</name>
+        <name>max</name>
+        <type class="smile.data.type.DoubleType" reference="../../smile.data.type.StructField/type"/>
+      </smile.data.type.StructField>
+      <smile.data.type.StructField>
+        <name>avg</name>
+        <type class="smile.data.type.DoubleType" reference="../../smile.data.type.StructField/type"/>
+      </smile.data.type.StructField>
+      <smile.data.type.StructField>
+        <name>isTarget</name>
+        <type class="smile.data.type.DoubleType" reference="../../smile.data.type.StructField/type"/>
+      </smile.data.type.StructField>
+      <smile.data.type.StructField>
+        <name>isNotTarget</name>
         <type class="smile.data.type.DoubleType" reference="../../smile.data.type.StructField/type"/>
       </smile.data.type.StructField>
     </fields>
     <index>
       <entry>
-        <string>target</string>
-        <int>0</int>
+        <string>isTarget</string>
+        <int>3</int>
       </entry>
       <entry>
         <string>min</string>
+        <int>0</int>
+      </entry>
+      <entry>
+        <string>avg</string>
+        <int>2</int>
+      </entry>
+      <entry>
+        <string>max</string>
         <int>1</int>
+      </entry>
+      <entry>
+        <string>isNotTarget</string>
+        <int>4</int>
       </entry>
     </index>
   </schema>
@@ -44,19 +77,26 @@
       <size>459</size>
       <trueChild class="smile.base.cart.OrdinalNode">
         <size>164</size>
-        <trueChild class="smile.base.cart.RegressionNode">
-          <size>63</size>
-          <mean>1.0</mean>
-          <output>1.0</output>
-          <rss>0.0</rss>
-        </trueChild>
-        <falseChild class="smile.base.cart.OrdinalNode">
-          <size>101</size>
-          <trueChild class="smile.base.cart.RegressionNode">
-            <size>95</size>
-            <mean>2.0</mean>
-            <output>2.0</output>
-            <rss>0.0</rss>
+        <trueChild class="smile.base.cart.OrdinalNode">
+          <size>74</size>
+          <trueChild class="smile.base.cart.OrdinalNode">
+            <size>68</size>
+            <trueChild class="smile.base.cart.RegressionNode">
+              <size>61</size>
+              <mean>1.0</mean>
+              <output>1.0</output>
+              <rss>0.0</rss>
+            </trueChild>
+            <falseChild class="smile.base.cart.RegressionNode">
+              <size>7</size>
+              <mean>2.0</mean>
+              <output>2.0</output>
+              <rss>0.0</rss>
+            </falseChild>
+            <feature>0</feature>
+            <score>6.27941176470587</score>
+            <deviance>6.279411764705878</deviance>
+            <value>0.5</value>
           </trueChild>
           <falseChild class="smile.base.cart.RegressionNode">
             <size>6</size>
@@ -64,23 +104,68 @@
             <output>0.0</output>
             <rss>0.0</rss>
           </falseChild>
-          <feature>0</feature>
-          <score>22.574257425742587</score>
-          <deviance>22.5742574257426</deviance>
+          <feature>3</feature>
+          <score>6.707074721780614</score>
+          <deviance>12.986486486486493</deviance>
           <value>0.5</value>
+        </trueChild>
+        <falseChild class="smile.base.cart.OrdinalNode">
+          <size>90</size>
+          <trueChild class="smile.base.cart.RegressionNode">
+            <size>5</size>
+            <mean>1.8</mean>
+            <output>1.8</output>
+            <rss>0.8</rss>
+          </trueChild>
+          <falseChild class="smile.base.cart.OrdinalNode">
+            <size>85</size>
+            <trueChild class="smile.base.cart.RegressionNode">
+              <size>80</size>
+              <mean>2.0</mean>
+              <output>2.0</output>
+              <rss>0.0</rss>
+            </trueChild>
+            <falseChild class="smile.base.cart.RegressionNode">
+              <size>5</size>
+              <mean>1.8</mean>
+              <output>1.8</output>
+              <rss>0.8</rss>
+            </falseChild>
+            <feature>2</feature>
+            <score>0.1882352941176464</score>
+            <deviance>0.9882352941176473</deviance>
+            <value>2.6547619047619047</value>
+          </falseChild>
+          <feature>2</feature>
+          <score>0.16732026143785106</score>
+          <deviance>1.9555555555555546</deviance>
+          <value>1.6961538461538461</value>
         </falseChild>
-        <feature>1</feature>
-        <score>30.126962086452522</score>
+        <feature>2</feature>
+        <score>37.75917747015313</score>
         <deviance>52.70121951219525</deviance>
-        <value>0.5</value>
+        <value>1.5894736842105264</value>
       </trueChild>
       <falseChild class="smile.base.cart.OrdinalNode">
         <size>295</size>
-        <trueChild class="smile.base.cart.RegressionNode">
+        <trueChild class="smile.base.cart.OrdinalNode">
           <size>142</size>
-          <mean>2.9859154929577465</mean>
-          <output>2.9859154929577465</output>
-          <rss>1.9718309859154926</rss>
+          <trueChild class="smile.base.cart.RegressionNode">
+            <size>6</size>
+            <mean>2.6666666666666665</mean>
+            <output>2.6666666666666665</output>
+            <rss>1.3333333333333333</rss>
+          </trueChild>
+          <falseChild class="smile.base.cart.RegressionNode">
+            <size>136</size>
+            <mean>3.0</mean>
+            <output>3.0</output>
+            <rss>0.0</rss>
+          </falseChild>
+          <feature>2</feature>
+          <score>0.6384976525821457</score>
+          <deviance>1.9718309859154926</deviance>
+          <value>2.3095238095238093</value>
         </trueChild>
         <falseChild class="smile.base.cart.RegressionNode">
           <size>153</size>
@@ -88,12 +173,12 @@
           <output>4.0</output>
           <rss>0.0</rss>
         </falseChild>
-        <feature>1</feature>
+        <feature>0</feature>
         <score>75.73664359035547</score>
         <deviance>77.70847457627103</deviance>
         <value>2.5</value>
       </falseChild>
-      <feature>1</feature>
+      <feature>0</feature>
       <score>408.71884621654453</score>
       <deviance>539.1285403050092</deviance>
       <value>1.5</value>
@@ -114,7 +199,7 @@
           <output>6.0</output>
           <rss>0.0</rss>
         </falseChild>
-        <feature>1</feature>
+        <feature>0</feature>
         <score>61.57894736842081</score>
         <deviance>61.57894736842092</deviance>
         <value>4.5</value>
@@ -149,27 +234,27 @@
               <output>10.0</output>
               <rss>0.0</rss>
             </falseChild>
-            <feature>1</feature>
+            <feature>0</feature>
             <score>4.264705882353155</score>
             <deviance>4.264705882352943</deviance>
             <value>8.5</value>
           </falseChild>
-          <feature>1</feature>
+          <feature>0</feature>
           <score>28.891544117646845</score>
           <deviance>33.15625</deviance>
           <value>7.5</value>
         </falseChild>
-        <feature>1</feature>
+        <feature>0</feature>
         <score>98.26083542713423</score>
         <deviance>131.41708542713596</deviance>
         <value>6.5</value>
       </falseChild>
-      <feature>1</feature>
+      <feature>0</feature>
       <score>535.6945501640839</score>
       <deviance>728.690582959641</deviance>
       <value>5.5</value>
     </falseChild>
-    <feature>1</feature>
+    <feature>0</feature>
     <score>3012.1410977298256</score>
     <deviance>4279.9602209944715</deviance>
     <value>3.5</value>
@@ -177,9 +262,12 @@
   <maxDepth>20</maxDepth>
   <maxNodes>181</maxNodes>
   <nodeSize>5</nodeSize>
-  <mtry>2</mtry>
+  <mtry>5</mtry>
   <importance>
-    <double>22.574257425742587</double>
-    <double>4255.414132582817</double>
+    <double>4231.566582261071</double>
+    <double>0.0</double>
+    <double>38.75323067829078</double>
+    <double>6.707074721780614</double>
+    <double>0.0</double>
   </importance>
 </smile.regression.RegressionTree>

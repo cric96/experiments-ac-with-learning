@@ -1,6 +1,6 @@
 # Experiments of Aggregate Computing combined with AI 
 
-## Hop-count with regression
+## Hop-count with multiple Input.
 
 ### Description:
 
@@ -54,38 +54,4 @@ Each line shows the MSE according to the standard implementation. *network* and 
 Instead, random forest and gradient boost have a substantial error. Looking the output, seems that these model can't generalize and
 tend to overfit the training set.
 #### Final remarks
-
-This example is surely too simple, but it helps me to make some considerations.
-
-*Is it correct to guide the model in real case scenario?*
-
-Introducing bias in learning tasks could speed up the convergence of machine learning algorithms.
-But, on the other hand, this constrains the learning process. If we put some wrong constraint, the algorithm could learn something wrong. So careful attention has to be used when we add restrictions.
-
-*How to gather data?*
-
-This is a tricky part of our learning process. In this case, I took only the last "snapshot" of *computational field* and then I extracted the data. For example, having a grid world like this:
-
-![Model](assets/examples/world.png)
-
-I evaluated the world after the simulation run with a global view, so when the field is like this:
-
-![Model after execution](assets/examples/world-after-execution.png)
-
-And in general, it is a good choice because in the transitory things could go bad in an uncontrolled way.
-Unfortunately, sometimes I need temporal information about what is happening. Suppose that source disappears, the resultant computational field is composed of infinity in each point. 
-In this case, using a global viewpoint, I see first a correct field of hop count and then a field filled by infinity:
-
-![Model after execution](assets/examples/to-infinite.png)
-
-What is difficult for us is to understand the transient. We know how to evaluate in the end whether a field is right or not, but during its execution, it is difficult for us to understand what a node is supposed to produce at a defined time. I think it's related to the usual problem of local and global mapping.
-
-*What model could be more appropriate for learning AC function?*
-
-In general, we cannot presume that we can always extract singular (or fixed) data from the neighbor.
-All traditional ML techniques suppose that the input is fixed. 
-So, I imagine that we need to use novel techniques like RNN.
-
-*What is intrigued*
-
-If we find a way to learn from example, we can execute simulations in little networks. Then we theoretically scale up to a large-scale system. That is a very interesting perspective for our research.
+**TODO**

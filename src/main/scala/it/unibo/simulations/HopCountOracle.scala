@@ -3,12 +3,18 @@ package it.unibo.simulations
 import it.unibo.alchemist.model.implementations.nodes.SimpleNodeManager
 import it.unibo.alchemist.model.interfaces.Node
 import it.unibo.alchemist.model.scafi.ScafiIncarnationForAlchemist._
+import it.unibo.common.StatisticsEvaluation
 
 import scala.annotation.tailrec
 import scala.collection.immutable.Queue
 import scala.jdk.CollectionConverters._
 
-class HopCountOracle extends AggregateProgram with StandardSensors with ScafiAlchemistSupport {
+class HopCountOracle
+    extends AggregateProgram
+    with StandardSensors
+    with ScafiAlchemistSupport
+    with FieldUtils
+    with StatisticsEvaluation {
 
   type Hop       = Double
   type VisitNode = (Node[Any], Hop)
@@ -17,8 +23,13 @@ class HopCountOracle extends AggregateProgram with StandardSensors with ScafiAlc
 
   override def main(): Int = {
     rep(Double.PositiveInfinity) { data =>
-      val min = minHoodPlus(nbr(data))
+      val statisticsIndex = extractStatisticsIndex(data)
+      val (min, max, avg) = (statisticsIndex.min, statisticsIndex.max, statisticsIndex.avg)
       node.put("min", min)
+      node.put("max", max)
+      node.put("avg", avg)
+      node.put("isTarget", booleanEncoding(target(me)))
+      node.put("isNotTarget", booleanEncoding(!target(me)))
       node.put("status", sense[Double]("target"))
       val result = guess
       node.put("y", result)
