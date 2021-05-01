@@ -23,7 +23,7 @@ Add complexity in order to verify if our approach can be used in a more complex 
 ### :yellow_circle: Status
 On validation
 ### :black_circle: Things discovered
-Nothing special. Nothing special. Please refer to the [README](https://github.com/cric96/experiments-ac-with-learning/tree/hop-count-regression#readme) to gain more information.
+Nothing special. Nothing special. Please refer to the [README](https://github.com/cric96/experiments-ac-with-learning/tree/hop-count-multiple-input#readme) to gain more information.
 
 ---
 ## [Hop count regression](https://github.com/cric96/experiments-ac-with-learning/tree/hop-count-regression)
