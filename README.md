@@ -13,17 +13,17 @@ Here, each experiment is synthesis with:
 - the name that link to the branch
 - a brief description of the experiment
 - a sentence that describes the goal
-- a status that could be in :red_circle: Doing, :yellow_circle: On Validation (i.e. wait the validation from @metaphori and @mviroli) and :green_circle: Done (the goal is achieved and is validated by the group)
+- a status that could be in :red_circle: Doing, :yellow_circle: On validation (i.e. wait the validation from @metaphori and @mviroli) and :green_circle: Done (the goal is achieved and is validated by the group)
 - things discovered with a *qualitative* description, and a color (:black_circle: -> nothing special, :yellow_circle: -> something interesting, :green_circle: -> valuable result / usable in a scientific article)
 ---
 ## [Hop count with multiple input](https://github.com/cric96/experiments-ac-with-learning/tree/hop-count-multiple-input)
-**TODO**
+This experiment is an extension of [Hop count regression](https://github.com/cric96/experiments-ac-with-learning/tree/hop-count-regression) in which we consider a set of statistical index (min, max and average) to compute the hop count.
 ### *Goal*
-**TODO**
-### :red_circle: Status
-Doing.
+Add complexity in order to verify if our approach can be used in a more complex scenario.
+### :yellow_circle: Status
+On validation
 ### :black_circle: Things discovered
-**TODO**
+Nothing special. Nothing special. Please refer to the [README](https://github.com/cric96/experiments-ac-with-learning/tree/hop-count-regression#readme) to gain more information.
 
 ---
 ## [Hop count regression](https://github.com/cric96/experiments-ac-with-learning/tree/hop-count-regression)
