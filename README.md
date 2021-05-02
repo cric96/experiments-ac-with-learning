@@ -15,6 +15,15 @@ Here, each experiment is synthesis with:
 - a sentence that describes the goal
 - a status that could be in :red_circle: Doing, :yellow_circle: On validation (i.e. wait the validation from @metaphori and @mviroli) and :green_circle: Done (the goal is achieved and is validated by the group)
 - things discovered with a *qualitative* description, and a color (:black_circle: -> nothing special, :yellow_circle: -> something interesting, :green_circle: -> valuable result / usable in a scientific article)
+- ---
+## [Hop count using a temporal window](https://github.com/cric96/experiments-ac-with-learning/tree/???)
+**TODO**
+### *Goal*
+**TODO**
+### 🔴: Status
+Doing
+### :black_circle: Things discovered
+
 ---
 ## [Hop count with multiple input](https://github.com/cric96/experiments-ac-with-learning/tree/hop-count-multiple-input)
 This experiment is an extension of [Hop count regression](https://github.com/cric96/experiments-ac-with-learning/tree/hop-count-regression) in which we consider a set of statistical index (min, max and average) to compute the hop count.
