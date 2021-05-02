@@ -8,7 +8,7 @@ This experiment is an extesion of [Hop count regression](https://github.com/cric
 
 ---
 
-This experiment is set up as **Hop count regression** but, in this case, instead of taking only the minimum value within the neighboorhood, we extrac three statistical indexes (min, max, average). So [ExtractCsv](src/main/scala/it/unibo/alchemist/model/implementations/actions/ExtractCsv.scala) exports:
+This experiment is set up as **Hop count regression** but, in this case, instead of taking only the minimum value within the neighboorhood, we extract three values (min, max, average). So [ExtractCsv](src/main/scala/it/unibo/alchemist/model/implementations/actions/ExtractCsv.scala) exports:
 1. min neighhbour value
 2. max neighbour value
 3. average neighbour value
