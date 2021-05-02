@@ -26,7 +26,7 @@ Doing
 
 ---
 ## [Hop count with multiple input](https://github.com/cric96/experiments-ac-with-learning/tree/hop-count-multiple-input)
-This experiment is an extension of [Hop count regression](https://github.com/cric96/experiments-ac-with-learning/tree/hop-count-regression) in which we consider a set of statistical index (min, max and average) to compute the hop count.
+This experiment is an extension of [Hop count regression](https://github.com/cric96/experiments-ac-with-learning/tree/hop-count-regression) in which we consider a set of values (min, max and average) to compute the hop count.
 ### *Goal*
 Add complexity in order to verify if our approach can be used in a more complex scenario.
 ### :yellow_circle: Status
