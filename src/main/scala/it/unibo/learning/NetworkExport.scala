@@ -72,7 +72,7 @@ object NetworkExport {
     evaluation.eval(dataset.testSet.getLabels, network.output(dataset.testSet.getFeatures))
     println(evaluation.stats())
     //store
-    ModelSerializer.writeModel(network, "network", false)
+    ModelSerializer.writeModel(network, "src/main/resources/network", false)
   }
 
   //utility functions

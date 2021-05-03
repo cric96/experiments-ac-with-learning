@@ -18,7 +18,7 @@ class ExtractCsv[T, P <: Position[P]](val env: Environment[T, P], val node: Node
       val elements = env.getNodes.iterator().asScala.toList
       val csv = elements
         .map(new SimpleNodeManager[T](_))
-        .map(node => s"${node.get[Double]("y")},${node.get[Double]("target")},${node.get[Double]("min")}")
+        .map(node => s"${node.get[Iterable[Double]]("values").mkString(",")},${node.get[Double]("y")}")
         .mkString("\n")
       val pw = new PrintWriter(
         new FileOutputStream(new File("output.csv"), true)
@@ -27,5 +27,6 @@ class ExtractCsv[T, P <: Position[P]](val env: Environment[T, P], val node: Node
       pw.close()
     }
   }
+
   override def getContext: Context = Context.GLOBAL
 }

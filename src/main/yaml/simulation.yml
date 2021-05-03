@@ -61,7 +61,7 @@ displacements:
         concentration: 0.0
       - molecule: y
         concentration: 0.0
-      - molecule: min
+      - molecule: values
         concentration: 0.0
 
   - in:
@@ -71,10 +71,11 @@ displacements:
       - *program
       - *extractor
     contents:
-      - molecule: min
-        concentration: 0.0
       - molecule: target
         concentration: 1.0
       - molecule: y
         concentration: 0.0
+      - molecule: values
+        concentration: 0.0
+
 

@@ -8,7 +8,7 @@ import scala.annotation.tailrec
 import scala.collection.immutable.Queue
 import scala.jdk.CollectionConverters._
 
-class HopCountOracle extends AggregateProgram with StandardSensors with ScafiAlchemistSupport {
+class HopCountOracle extends AggregateProgram with StandardSensors with ScafiAlchemistSupport with FieldUtils {
 
   type Hop       = Double
   type VisitNode = (Node[Any], Hop)
@@ -17,9 +17,8 @@ class HopCountOracle extends AggregateProgram with StandardSensors with ScafiAlc
 
   override def main(): Int = {
     rep(Double.PositiveInfinity) { data =>
-      val min = minHoodPlus(nbr(data))
-      node.put("min", min)
-      node.put("status", sense[Double]("target"))
+      val neighborhood: Iterable[Double] = excludingSelf.reifyField(nbr(data)).values
+      node.put("values", neighborhood)
       val result = guess
       node.put("y", result)
       node.put("color", result * delta)
