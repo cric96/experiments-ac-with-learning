@@ -24,12 +24,12 @@ Here, each experiment is synthesis with:
 Not started
 ### :black_circle: Things discovered
 ---
-## [Hop count using with variable input](https://github.com/cric96/experiments-ac-with-learning/tree/???)
+## [Hop count using with variable input](https://github.com/cric96/experiments-ac-with-learning/tree/hop-count-variable-input)
 **TODO**
 ### *Goal*
 **TODO**
-### :black_circle: Status
-Not started
+### 🔴 Status
+Doing
 ### :black_circle: Things discovered
 
 ---
