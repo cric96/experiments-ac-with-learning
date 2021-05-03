@@ -34,11 +34,13 @@ object DeepNetworks {
       .map(new DenseLayer.Builder().units(_))
       .map(_.activation(Activation.RELU))
       .map(_.build())
+
     val output = new OutputLayer.Builder(LossFunctions.LossFunction.MSE)
       .activation(Activation.IDENTITY)
       .nIn(hidden.reverse.head)
       .nOut(outputSize)
       .build()
+
     val layers = hiddenLayers ::: output :: Nil
     new NeuralNetConfiguration.Builder() //hyper parameter section
       .seed(seed.value)
@@ -53,7 +55,12 @@ object DeepNetworks {
       seed: Seed = defaultSeed
   ): MultiLayerConfiguration = {
     val hidden =
-      layers.map(info => new Convolution1DLayer.Builder(info.kernelSize).nIn(info.depth).nOut(info.filters).build())
+      layers.map(info =>
+        new Convolution1DLayer.Builder(info.kernelSize, info.kernelSize)
+          .nIn(info.depth)
+          .nOut(info.filters)
+          .build()
+      )
 
     val globalAveragePooling = new GlobalPoolingLayer.Builder(poolingType)
       .build()
@@ -62,14 +69,14 @@ object DeepNetworks {
       .nIn(layers.reverse.head.filters)
       .nOut(output)
       .activation(Activation.IDENTITY)
-      .lossFunction(LossFunctions.LossFunction.MSE)
+      .lossFunction(LossFunctions.LossFunction.L2)
       .build()
 
     val layersBuilt: List[Layer] = hidden ::: globalAveragePooling :: outputLayer :: Nil
     new NeuralNetConfiguration.Builder()
-      .weightInit(WeightInit.RELU)
-      .activation(Activation.RELU)
-      .convolutionMode(ConvolutionMode.Causal)
+      .weightInit(WeightInit.LECUN_UNIFORM)
+      .activation(Activation.SELU)
+      .convolutionMode(ConvolutionMode.Same)
       .seed(seed.value)
       .updater(new Adam())
       .list(layersBuilt: _*)

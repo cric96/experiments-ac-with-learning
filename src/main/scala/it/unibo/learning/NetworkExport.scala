@@ -20,10 +20,13 @@ import org.deeplearning4j.ui.api.UIServer
 import org.deeplearning4j.ui.model.stats.StatsListener
 import org.deeplearning4j.ui.model.storage.InMemoryStatsStorage
 import org.deeplearning4j.util.ModelSerializer
+import org.nd4j.evaluation.regression.RegressionEvaluation
 import org.nd4j.linalg.cpu.nativecpu.NDArray
 import org.nd4j.linalg.dataset.DataSet
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator
+
 import java.io.File
+import scala.jdk.CollectionConverters.IteratorHasAsScala
 import scala.jdk.CollectionConverters.ListHasAsScala
 import scala.util.Random
 
@@ -35,15 +38,13 @@ object NetworkExport {
 
   private val hidden = {
     import DeepNetworks._
-    conv1d(3, 1, 16) ::
-      conv1d(1, 16, 8) ::
-      Nil
+    conv1d(2, 1, 128) ::
+      conv1d(2, 128, 256) ::
+      conv1d(2, 256, 64) :: Nil
   }
   //dataset information
-  private val regressionIndex = 0
-  private val epoch           = 1000
-  private val patience        = 10
-  private val batchSize       = 1
+  private val epoch           = 100
+  private val patience        = 5
   private val splitValidation = 0.2
   private val splitTest       = 0.1
 
@@ -62,12 +63,23 @@ object NetworkExport {
     //network initialization
     network.init()
     attachUIServer(network)
+    network.addListeners(new ValidationScoreListener(dataset), new SimpleScoreListener)
     //train
     val trainer = configureTrainer(network, epoch, patience, dataset.validationSet, dataset.trainingSet)
     trainer.fit()
     //evaluation
-    //val evaluation = new RegressionEvaluation()
-    //println(evaluation.stats())
+    val evaluation   = new RegressionEvaluation()
+    val testElements = dataset.testSet.asScala.toList
+    val labels       = testElements.map(_.getLabels)
+    val feature      = testElements.map(_.getFeatures)
+    feature.zip(labels).foreach { case (feature, label) =>
+      evaluation.eval(label, network.output(feature))
+    }
+    println(evaluation.stats())
+    println(network.feedForward((new NDArray(Array(8f, 10000f, 8f, 11f), Array(1, 1, 4)))))
+    println(network.output(new NDArray(Array(8f), Array(1, 1, 1))))
+    println(network.output(new NDArray(Array(8f, 12f), Array(1, 1, 2))))
+    println(network.output(new NDArray(Array(8f, 14f, 8f), Array(1, 1, 3))))
     //store
     ModelSerializer.writeModel(network, "src/main/resources/network", false)
   }
@@ -90,7 +102,7 @@ object NetworkExport {
     }.toList
     val shuffled = random.shuffle(reader).map(list => list.map(_.toFloat)).map { array =>
       val elements = array.reverse.tail.toArray
-      val feature  = new NDArray(elements, Array(1, 1, elements.size))
+      val feature  = new NDArray(elements, Array(1, 1, elements.length))
       val output   = new NDArray(Array(array.reverse.head))
       new DataSet(feature, output)
     }
@@ -106,7 +118,7 @@ object NetworkExport {
     val statsStorage = new InMemoryStatsStorage
     uiServer.attach(statsStorage)
     //add listener
-    network.setListeners(new SimpleScoreLister, new StatsListener(statsStorage))
+    network.setListeners(new StatsListener(statsStorage))
   }
 
   private def configureTrainer(
