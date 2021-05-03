@@ -13,15 +13,15 @@ Here, each experiment is synthesis with:
 - the name that link to the branch
 - a brief description of the experiment
 - a sentence that describes the goal
-- a status that could be in :red_circle: Doing, :yellow_circle: On validation (i.e. wait the validation from @metaphori and @mviroli) and :green_circle: Done (the goal is achieved and is validated by the group)
+- a status that could be in :black_circle: Not started :red_circle: Doing, :yellow_circle: On validation (i.e. wait the validation from @metaphori and @mviroli) and :green_circle: Done (the goal is achieved and is validated by the group)
 - things discovered with a *qualitative* description, and a color (:black_circle: -> nothing special, :yellow_circle: -> something interesting, :green_circle: -> valuable result / usable in a scientific article)
 - ---
 ## [Hop count using a temporal window](https://github.com/cric96/experiments-ac-with-learning/tree/???)
 **TODO**
 ### *Goal*
 **TODO**
-### 🔴: Status
-Doing
+### :black_circle: Status
+Not started
 ### :black_circle: Things discovered
 
 ---
