@@ -6,13 +6,14 @@ import org.apache.commons.io.FilenameUtils
 import org.datavec.api.records.reader.impl.csv.CSVRecordReader
 import org.datavec.api.split.FileSplit
 import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator
+import org.deeplearning4j.earlystopping.EarlyStoppingConfiguration
+import org.deeplearning4j.earlystopping.EarlyStoppingModelSaver
 import org.deeplearning4j.earlystopping.saver.LocalFileModelSaver
 import org.deeplearning4j.earlystopping.scorecalc.DataSetLossCalculator
 import org.deeplearning4j.earlystopping.termination.MaxEpochsTerminationCondition
 import org.deeplearning4j.earlystopping.termination.ScoreImprovementEpochTerminationCondition
 import org.deeplearning4j.earlystopping.trainer.EarlyStoppingTrainer
-import org.deeplearning4j.earlystopping.EarlyStoppingConfiguration
-import org.deeplearning4j.earlystopping.EarlyStoppingModelSaver
+import org.deeplearning4j.nn.conf.layers.PoolingType
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
 import org.deeplearning4j.ui.api.UIServer
 import org.deeplearning4j.ui.model.stats.StatsListener
@@ -26,9 +27,14 @@ import java.io.File
 object NetworkExport {
   implicit val seed: Seed = Seed(42)
   //network configuration
-  private val inputSize  = 2
   private val outputSize = 1
-  private val hidden     = 8 :: 6 :: 4 :: 2 :: Nil
+
+  private val hidden = {
+    import DeepNetworks._
+    conv1d(3, 1, 16) ::
+      conv1d(1, 1, 8) ::
+      Nil
+  }
   //dataset information
   private val regressionIndex = 0
   private val epoch           = 1000
@@ -46,15 +52,15 @@ object NetworkExport {
       batchSize = batchSize,
       labelRegressionRange = (regressionIndex, regressionIndex)
     )
-  private val trainIterator      = DeepNetworks.wrapDataSetToIterator(dataset.trainingSet)
-  private val validationIterator = DeepNetworks.wrapDataSetToIterator(dataset.validationSet)
+  private val trainIterator      = DeepNetworks.wrapDataSetToIterator(dataset.trainingSet, 1) //SGD... we can improve..
+  private val validationIterator = DeepNetworks.wrapDataSetToIterator(dataset.validationSet, 1)
 
   //neural network
-  private val configuration = DeepNetworks
-    .multiLayerRegressionConfiguration(inputSize, outputSize, hidden)
-  private val network = new MultiLayerNetwork(configuration)
+  private val configuration = DeepNetworks.fullyConvolutionalNetwork1D(hidden, outputSize, PoolingType.AVG)
+  private val network       = new MultiLayerNetwork(configuration)
 
   def main(args: Array[String]): Unit = {
+    network.init()
     //network initialization
     network.init()
     attachUIServer(network)
