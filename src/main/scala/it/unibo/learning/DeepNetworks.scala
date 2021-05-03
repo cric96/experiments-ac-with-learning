@@ -14,11 +14,13 @@ import org.nd4j.linalg.dataset.{DataSet => JDataSet}
 import org.nd4j.linalg.learning.config.Adam
 import org.nd4j.linalg.lossfunctions.LossFunctions
 
+import scala.jdk.CollectionConverters.SeqHasAsJava
+
 object DeepNetworks {
   private val defaultSeed = Seed(42)
   //utility case class
   case class Seed(value: Long)
-  case class DataSetSplit(trainingSet: JDataSet, validationSet: JDataSet, testSet: JDataSet)
+  case class DataSetSplit(trainingSet: DataSetIterator, validationSet: DataSetIterator, testSet: DataSetIterator)
   case class Conv1DLayerInfo(kernelSize: Int, depth: Int, filters: Int)
   def conv1d(kernel: Int, depth: Int, filters: Int): Conv1DLayerInfo = Conv1DLayerInfo(kernel, depth, filters)
 
@@ -75,7 +77,6 @@ object DeepNetworks {
       .build()
   }
 
-  //utility function that wrap a DataSet (Deeplearning4j) into a DataSetIterator
-  def wrapDataSetToIterator(dataset: JDataSet, batchSize: Int = 32): DataSetIterator =
-    new ListDataSetIterator(dataset.asList(), batchSize)
+  def wrapDataSetToIterator(dataset: List[JDataSet], batchSize: Int = 32): DataSetIterator =
+    new ListDataSetIterator(dataset.asJava, batchSize)
 }

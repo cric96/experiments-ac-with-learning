@@ -2,10 +2,11 @@ package it.unibo.learning
 
 import it.unibo.learning.DeepNetworks.DataSetSplit
 import it.unibo.learning.DeepNetworks.Seed
+import it.unibo.learning.DeepNetworks.wrapDataSetToIterator
 import org.apache.commons.io.FilenameUtils
 import org.datavec.api.records.reader.impl.csv.CSVRecordReader
 import org.datavec.api.split.FileSplit
-import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator
+import org.datavec.api.writable.Writable
 import org.deeplearning4j.earlystopping.EarlyStoppingConfiguration
 import org.deeplearning4j.earlystopping.EarlyStoppingModelSaver
 import org.deeplearning4j.earlystopping.saver.LocalFileModelSaver
@@ -19,27 +20,30 @@ import org.deeplearning4j.ui.api.UIServer
 import org.deeplearning4j.ui.model.stats.StatsListener
 import org.deeplearning4j.ui.model.storage.InMemoryStatsStorage
 import org.deeplearning4j.util.ModelSerializer
-import org.nd4j.evaluation.regression.RegressionEvaluation
+import org.nd4j.linalg.cpu.nativecpu.NDArray
+import org.nd4j.linalg.dataset.DataSet
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator
-
 import java.io.File
+import scala.jdk.CollectionConverters.ListHasAsScala
+import scala.util.Random
 
 object NetworkExport {
   implicit val seed: Seed = Seed(42)
+  val random              = new Random(seed.value)
   //network configuration
   private val outputSize = 1
 
   private val hidden = {
     import DeepNetworks._
     conv1d(3, 1, 16) ::
-      conv1d(1, 1, 8) ::
+      conv1d(1, 16, 8) ::
       Nil
   }
   //dataset information
   private val regressionIndex = 0
   private val epoch           = 1000
   private val patience        = 10
-  private val batchSize       = 1000
+  private val batchSize       = 1
   private val splitValidation = 0.2
   private val splitTest       = 0.1
 
@@ -48,29 +52,22 @@ object NetworkExport {
     prepareDataset(
       "output.csv",
       splitValidation = splitValidation,
-      splitTest = splitTest,
-      batchSize = batchSize,
-      labelRegressionRange = (regressionIndex, regressionIndex)
+      splitTest = splitTest
     )
-  private val trainIterator      = DeepNetworks.wrapDataSetToIterator(dataset.trainingSet, 1) //SGD... we can improve..
-  private val validationIterator = DeepNetworks.wrapDataSetToIterator(dataset.validationSet, 1)
-
   //neural network
   private val configuration = DeepNetworks.fullyConvolutionalNetwork1D(hidden, outputSize, PoolingType.AVG)
   private val network       = new MultiLayerNetwork(configuration)
 
   def main(args: Array[String]): Unit = {
-    network.init()
     //network initialization
     network.init()
     attachUIServer(network)
     //train
-    val trainer = configureTrainer(network, epoch, patience, validationIterator, trainIterator)
+    val trainer = configureTrainer(network, epoch, patience, dataset.validationSet, dataset.trainingSet)
     trainer.fit()
     //evaluation
-    val evaluation = new RegressionEvaluation()
-    evaluation.eval(dataset.testSet.getLabels, network.output(dataset.testSet.getFeatures))
-    println(evaluation.stats())
+    //val evaluation = new RegressionEvaluation()
+    //println(evaluation.stats())
     //store
     ModelSerializer.writeModel(network, "src/main/resources/network", false)
   }
@@ -81,23 +78,26 @@ object NetworkExport {
   private def prepareDataset(
       file: String,
       splitValidation: Double,
-      splitTest: Double,
-      batchSize: Int = 2,
-      labelRegressionRange: (Int, Int)
-  )(implicit seed: Seed): DataSetSplit = {
+      splitTest: Double
+  ): DataSetSplit = {
     require(isProbability(splitValidation) && isProbability(splitTest))
-    val reader = new CSVRecordReader(',')
-    reader.initialize(new FileSplit(new File(file)))
-    val dataSetIterator =
-      new RecordReaderDataSetIterator(reader, batchSize, labelRegressionRange._1, labelRegressionRange._2, true)
 
-    val allData = dataSetIterator.next()
-    allData.shuffle(seed.value)
-    val trainAndTest = allData.splitTestAndTrain(1 - splitTest)
-    val (trainAndValidation, test) =
-      (trainAndTest.getTrain.splitTestAndTrain(1 - splitValidation), trainAndTest.getTest)
-    val (train, validation) = (trainAndValidation.getTrain, trainAndValidation.getTest)
-    DataSetSplit(train, validation, test)
+    val reader = new Iterator[List[Writable]] {
+      val reader = new CSVRecordReader(',')
+      reader.initialize(new FileSplit(new File(file)))
+      override def hasNext: Boolean       = reader.hasNext
+      override def next(): List[Writable] = reader.next().asScala.toList
+    }.toList
+    val shuffled = random.shuffle(reader).map(list => list.map(_.toFloat)).map { array =>
+      val elements = array.reverse.tail.toArray
+      val feature  = new NDArray(elements, Array(1, 1, elements.size))
+      val output   = new NDArray(Array(array.reverse.head))
+      new DataSet(feature, output)
+    }
+    val (test, trainAndValidation) = shuffled.splitAt((shuffled.size * splitTest).toInt)
+    val (validation, train)        = trainAndValidation.splitAt((trainAndValidation.size * splitValidation).toInt)
+    DataSetSplit(wrapDataSetToIterator(train, 1), wrapDataSetToIterator(validation, 1), wrapDataSetToIterator(test, 1))
+
   }
 
   private def attachUIServer(network: MultiLayerNetwork): Unit = {
