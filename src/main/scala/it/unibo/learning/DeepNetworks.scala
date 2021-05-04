@@ -21,8 +21,10 @@ object DeepNetworks {
   //utility case class
   case class Seed(value: Long)
   case class DataSetSplit(trainingSet: DataSetIterator, validationSet: DataSetIterator, testSet: DataSetIterator)
-  case class Conv1DLayerInfo(kernelSize: Int, depth: Int, filters: Int)
-  def conv1d(kernel: Int, depth: Int, filters: Int): Conv1DLayerInfo = Conv1DLayerInfo(kernel, depth, filters)
+  case class Conv1DLayerInfo(kernelSize: Int, depth: Int, filters: Int, dilatation: Int = 1)
+
+  def conv1d(kernel: Int, depth: Int, filters: Int, dilatation: Int = 1): Conv1DLayerInfo =
+    Conv1DLayerInfo(kernel, depth, filters, dilatation)
 
   //function to create a multi layer network with regression task
   def multiLayerRegressionConfiguration(
@@ -69,14 +71,42 @@ object DeepNetworks {
       .nIn(layers.reverse.head.filters)
       .nOut(output)
       .activation(Activation.IDENTITY)
-      .lossFunction(LossFunctions.LossFunction.L2)
+      .lossFunction(LossFunctions.LossFunction.MSE)
       .build()
 
     val layersBuilt: List[Layer] = hidden ::: globalAveragePooling :: outputLayer :: Nil
     new NeuralNetConfiguration.Builder()
-      .weightInit(WeightInit.LECUN_UNIFORM)
-      .activation(Activation.SELU)
+      .weightInit(WeightInit.VAR_SCALING_NORMAL_FAN_AVG)
+      .activation(Activation.LEAKYRELU)
       .convolutionMode(ConvolutionMode.Same)
+      .seed(seed.value)
+      .updater(new Adam())
+      .list(layersBuilt: _*)
+      .backpropType(BackpropType.Standard)
+      .build()
+  }
+
+  def lstmRecurrentNetwork(output: Int, hiddenLstm: List[(Int, Int)])(implicit
+      seed: Seed = defaultSeed
+  ): MultiLayerConfiguration = {
+    val hidden =
+      hiddenLstm.map(info =>
+        new LSTM.Builder()
+          .activation(Activation.TANH)
+          .nIn(info._1)
+          .nOut(info._2)
+          .build()
+      )
+
+    val outputLayer = new RnnOutputLayer.Builder(LossFunctions.LossFunction.MSE)
+      .activation(Activation.RELU)
+      .nIn(hiddenLstm.reverse.head._2)
+      .nOut(output)
+      .build()
+
+    val layersBuilt = hidden ::: outputLayer :: Nil
+
+    new NeuralNetConfiguration.Builder()
       .seed(seed.value)
       .updater(new Adam())
       .list(layersBuilt: _*)

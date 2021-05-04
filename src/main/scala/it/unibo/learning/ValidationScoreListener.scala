@@ -9,7 +9,7 @@ import org.nd4j.evaluation.regression.RegressionEvaluation
 import scala.jdk.CollectionConverters.IteratorHasAsScala
 
 class ValidationScoreListener(dataset: DataSetSplit) extends BaseTrainingListener {
-  private val testElements = dataset.testSet.asScala.toList
+  private val testElements = dataset.validationSet.asScala.toList
 
   override def onEpochEnd(model: Model): Unit = {
     val mlp        = model.asInstanceOf[MultiLayerNetwork]

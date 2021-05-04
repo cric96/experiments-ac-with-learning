@@ -38,9 +38,7 @@ object NetworkExport {
 
   private val hidden = {
     import DeepNetworks._
-    conv1d(2, 1, 128) ::
-      conv1d(2, 128, 256) ::
-      conv1d(2, 256, 64) :: Nil
+    conv1d(2, 1, 8) :: Nil
   }
   //dataset information
   private val epoch           = 100
@@ -56,12 +54,19 @@ object NetworkExport {
       splitTest = splitTest
     )
   //neural network
-  private val configuration = DeepNetworks.fullyConvolutionalNetwork1D(hidden, outputSize, PoolingType.AVG)
-  private val network       = new MultiLayerNetwork(configuration)
+  private val configuration     = DeepNetworks.fullyConvolutionalNetwork1D(hidden, outputSize, PoolingType.PNORM)
+  private val network           = new MultiLayerNetwork(configuration)
+  private val lstmConfiguration = DeepNetworks.lstmRecurrentNetwork(outputSize, (1, 20) :: Nil)
+  private val lstmNetwork       = new MultiLayerNetwork(lstmConfiguration)
 
   def main(args: Array[String]): Unit = {
     //network initialization
     network.init()
+    lstmNetwork.init()
+    println(lstmNetwork.rnnTimeStep(new NDArray(Array(8f))))
+    println(lstmNetwork.rnnTimeStep(new NDArray(Array(8f))))
+    println(lstmNetwork.rnnTimeStep(new NDArray(Array(8f))))
+    println(lstmNetwork.output(new NDArray(Array(8f, 12f), Array(1, 1, 2))))
     attachUIServer(network)
     network.addListeners(new ValidationScoreListener(dataset), new SimpleScoreListener)
     //train
@@ -79,7 +84,7 @@ object NetworkExport {
     println(network.feedForward((new NDArray(Array(8f, 10000f, 8f, 11f), Array(1, 1, 4)))))
     println(network.output(new NDArray(Array(8f), Array(1, 1, 1))))
     println(network.output(new NDArray(Array(8f, 12f), Array(1, 1, 2))))
-    println(network.output(new NDArray(Array(8f, 14f, 8f), Array(1, 1, 3))))
+    println(network.output(new NDArray(Array(2f, 4f, 3f), Array(1, 1, 3))))
     //store
     ModelSerializer.writeModel(network, "src/main/resources/network", false)
   }
