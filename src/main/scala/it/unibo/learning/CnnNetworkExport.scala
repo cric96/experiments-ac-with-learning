@@ -30,7 +30,7 @@ import scala.jdk.CollectionConverters.IteratorHasAsScala
 import scala.jdk.CollectionConverters.ListHasAsScala
 import scala.util.Random
 
-object NetworkExport {
+object CnnNetworkExport {
   implicit val seed: Seed = Seed(42)
   val random              = new Random(seed.value)
   //network configuration
@@ -54,19 +54,12 @@ object NetworkExport {
       splitTest = splitTest
     )
   //neural network
-  private val configuration     = DeepNetworks.fullyConvolutionalNetwork1D(hidden, outputSize, PoolingType.PNORM)
-  private val network           = new MultiLayerNetwork(configuration)
-  private val lstmConfiguration = DeepNetworks.lstmRecurrentNetwork(outputSize, (1, 20) :: Nil)
-  private val lstmNetwork       = new MultiLayerNetwork(lstmConfiguration)
+  private val configuration = DeepNetworks.fullyConvolutionalNetwork1D(hidden, outputSize, PoolingType.PNORM)
+  private val network       = new MultiLayerNetwork(configuration)
 
   def main(args: Array[String]): Unit = {
     //network initialization
     network.init()
-    lstmNetwork.init()
-    println(lstmNetwork.rnnTimeStep(new NDArray(Array(8f))))
-    println(lstmNetwork.rnnTimeStep(new NDArray(Array(8f))))
-    println(lstmNetwork.rnnTimeStep(new NDArray(Array(8f))))
-    println(lstmNetwork.output(new NDArray(Array(8f, 12f), Array(1, 1, 2))))
     attachUIServer(network)
     network.addListeners(new ValidationScoreListener(dataset), new SimpleScoreListener)
     //train
@@ -114,7 +107,6 @@ object NetworkExport {
     val (test, trainAndValidation) = shuffled.splitAt((shuffled.size * splitTest).toInt)
     val (validation, train)        = trainAndValidation.splitAt((trainAndValidation.size * splitValidation).toInt)
     DataSetSplit(wrapDataSetToIterator(train, 1), wrapDataSetToIterator(validation, 1), wrapDataSetToIterator(test, 1))
-
   }
 
   private def attachUIServer(network: MultiLayerNetwork): Unit = {

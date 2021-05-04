@@ -1,5 +1,9 @@
 package it.unibo.learning
 
+import org.datavec.api.records.reader.impl.collection.CollectionSequenceRecordReader
+import org.datavec.api.writable.FloatWritable
+import org.datavec.api.writable.Writable
+import org.deeplearning4j.datasets.datavec.SequenceRecordReaderDataSetIterator
 import org.deeplearning4j.datasets.iterator.impl.ListDataSetIterator
 import org.deeplearning4j.nn.conf.BackpropType
 import org.deeplearning4j.nn.conf.ConvolutionMode
@@ -17,14 +21,18 @@ import org.nd4j.linalg.lossfunctions.LossFunctions
 import scala.jdk.CollectionConverters.SeqHasAsJava
 
 object DeepNetworks {
+
   private val defaultSeed = Seed(42)
   //utility case class
   case class Seed(value: Long)
   case class DataSetSplit(trainingSet: DataSetIterator, validationSet: DataSetIterator, testSet: DataSetIterator)
   case class Conv1DLayerInfo(kernelSize: Int, depth: Int, filters: Int, dilatation: Int = 1)
+  case class LstmLayerInfo(in: Int, out: Int)
 
   def conv1d(kernel: Int, depth: Int, filters: Int, dilatation: Int = 1): Conv1DLayerInfo =
     Conv1DLayerInfo(kernel, depth, filters, dilatation)
+
+  def lstm(in: Int, out: Int): LstmLayerInfo = LstmLayerInfo(in, out)
 
   //function to create a multi layer network with regression task
   def multiLayerRegressionConfiguration(
@@ -86,21 +94,21 @@ object DeepNetworks {
       .build()
   }
 
-  def lstmRecurrentNetwork(output: Int, hiddenLstm: List[(Int, Int)])(implicit
+  def lstmRecurrentNetwork(hiddenLstm: List[LstmLayerInfo], output: Int)(implicit
       seed: Seed = defaultSeed
   ): MultiLayerConfiguration = {
     val hidden =
       hiddenLstm.map(info =>
         new LSTM.Builder()
           .activation(Activation.TANH)
-          .nIn(info._1)
-          .nOut(info._2)
+          .nIn(info.in)
+          .nOut(info.out)
           .build()
       )
 
     val outputLayer = new RnnOutputLayer.Builder(LossFunctions.LossFunction.MSE)
       .activation(Activation.RELU)
-      .nIn(hiddenLstm.reverse.head._2)
+      .nIn(hiddenLstm.reverse.head.out)
       .nOut(output)
       .build()
 
@@ -116,4 +124,23 @@ object DeepNetworks {
 
   def wrapDataSetToIterator(dataset: List[JDataSet], batchSize: Int = 32): DataSetIterator =
     new ListDataSetIterator(dataset.asJava, batchSize)
+
+  def wrapDataSetToSequenceIterator(dataset: List[JDataSet], batchSize: Int = 32): DataSetIterator = {
+    val elementsFeature = dataset
+      .map(a => a.getFeatures.toFloatVector.map(a => List(new FloatWritable(a): Writable).asJava).toList.asJava)
+      .asJava
+    val elementsLabel = dataset
+      .map(a => a.getLabels.toFloatVector.map(a => List(new FloatWritable(a): Writable).asJava).toList.asJava)
+      .asJava
+    val labels   = new CollectionSequenceRecordReader(elementsLabel)
+    val features = new CollectionSequenceRecordReader(elementsFeature)
+    new SequenceRecordReaderDataSetIterator(
+      features,
+      labels,
+      batchSize,
+      1,
+      true,
+      SequenceRecordReaderDataSetIterator.AlignmentMode.ALIGN_END
+    )
+  }
 }

@@ -1,7 +1,7 @@
 variables:
   random: &random
     min: 0
-    max: 10
+    max: 9
     step: 1
     default: 2
 
@@ -18,9 +18,13 @@ variables:
 
 export:
   - time
-  - molecule: network
+  - molecule: cnn_network
     value-filter: onlyfinite
     aggregators: [ mean ]
+  - molecule: lstm_network
+    value-filter: onlyfinite
+    aggregators: [ mean ]
+
 
 seeds:
   scenario: *random
@@ -59,7 +63,9 @@ displacements:
         concentration: 0.0
       - molecule: y
         concentration: 0.0
-      - molecule: network
+      - molecule: cnn_network
+        concentration: 0.0
+      - molecule: lstm_network
         concentration: 0.0
   - in:
       type: Rectangle
@@ -73,6 +79,8 @@ displacements:
         concentration: 1.0
       - molecule: y
         concentration: 0.0
-      - molecule: network
+      - molecule: cnn_network
+        concentration: 0.0
+      - molecule: lstm_network
         concentration: 0.0
 
