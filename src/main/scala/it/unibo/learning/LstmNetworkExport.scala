@@ -35,15 +35,15 @@ object LstmNetworkExport {
   //network configuration
   private val outputSize = 1
   //dataset information
-  private val epoch           = 1000
+  private val epoch           = 10000
   private val patience        = 5
   private val splitValidation = 0.2
   private val splitTest       = 0.1
-  private val batchSize       = 16
+  private val batchSize       = 1
 
   //layers
   private val hiddenLayer = {
-    lstm(1, 20) :: lstm(20, 10) :: lstm(10, 5) :: Nil
+    lstm(1, 20) :: Nil
   }
 
   //dataset preparation

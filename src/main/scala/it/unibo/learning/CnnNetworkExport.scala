@@ -41,7 +41,7 @@ object CnnNetworkExport {
     conv1d(2, 1, 8) :: Nil
   }
   //dataset information
-  private val epoch           = 100
+  private val epoch           = 1000
   private val patience        = 5
   private val splitValidation = 0.2
   private val splitTest       = 0.1
