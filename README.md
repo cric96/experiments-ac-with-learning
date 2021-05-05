@@ -37,7 +37,7 @@ The configuration is the same of **Hop count regression**.
 Similar to **Hop count regression**, but in this case, I change the initial value in rep to a constant value otherwise the system was  very unstable..
 
 ### What happens
-**05/05/2021**
+#### 05/05/2021
 ---
 Currently, the results aren't good. The models don't learn the function *min + 1* and are very unstable (RNN in particular, can't stabilize the value of the global field). It is even true that the model currently is very simple:
 
