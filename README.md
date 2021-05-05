@@ -12,9 +12,18 @@ In the following, there is a brief description of regression models that can han
 In general, regression models (and also classification models) presume that the input size is fixed. It is a problem in our domain: we don't have any guarantee in the input size (i.e. the neighbour values that the node gather) since the network is not *fixed* and can change over time.
 So, as the first experiments, I try to use two regression models that are independent of the input size: [(Fully) Convolutional Neural Network](https://stanford.edu/~shervine/teaching/cs-230/cheatsheet-convolutional-neural-networks), and [Recurrent Neural Network](https://stanford.edu/~shervine/teaching/cs-230/cheatsheet-recurrent-neural-networks). I want to point out that in general is a good practice to pre-process input, so even the previous approaches could be valuable (e.g. extracting only the min or a set of relevant values, in ML is usually to select a group of relevant feature).
 
-#### Convolutional Neural Network
+#### Convolutional Neural Network (CNN)
+CNN are neural network models used to process image data. Indeed they are inspired by the pioneering works in the neural cortex about simple cells and complex cell. The idea is that at an input, we apply a sequence of [Convolutional filter](https://en.wikipedia.org/wiki/Kernel_(image_processing)) invariant for translation and rotation. These operations, applied multiple times, found relevant features. These are then given in input to a standard Multi-Layer Perception (or another classification/regression model) that can learn easier the association input/output. This is an example of Feature Learning, i.e. the neural network learns what features should extract in order to understand the right input and output association. 
 
-#### Recurrent Neural Network
+A pictorical representation of this network could be:
+![image](https://stanford.edu/~shervine/teaching/cs-230/illustrations/architecture-cnn-en.jpeg?3b7fccd728e29dc619e1bd8022bf71cf)
+
+#### Fully Convolutional Neural Network (FCNN)
+
+#### Recurrent Neural Network (RNN)
+The aforementioned neural network is part of "feed-forward" models, i.e. the data flow to the input layer into the output layer without having a feedback loop on some layer. RNNs instead, introduce a feedback loop for each layer. In this way, it is possible to add a short of *memory*: the output at the time step *t* depends upon the output at the state *t-1*. Another feature that has these network is that is input invariant size. In fact, they are used for *sequential* and *time-series* data.
+An RNN can be summarized as follow:
+![image](https://stanford.edu/~shervine/teaching/cs-230/illustrations/description-block-rnn-ltr.png?74e25518f882f8758439bcb3637715e5)
 
 ### Validation configuration
 
