@@ -18,7 +18,12 @@ CNN are neural network models used to process image data. Indeed they are inspir
 A pictorial representation of this network could be:
 ![image](https://stanford.edu/~shervine/teaching/cs-230/illustrations/architecture-cnn-en.jpeg?3b7fccd728e29dc619e1bd8022bf71cf)
 
+CNN (and also FCNN) are also used with one dimensional signal (i.e. input sequence or audio) as in [WaveNet](https://deepmind.com/blog/article/wavenet-generative-model-raw-audio)
 #### Fully Convolutional Neural Network (FCNN)
+FCCN are CNN without the last dense layers. Namely 
+>They employ solely locally connected layers, such as convolution, pooling and upsampling. Avoiding the use of dense layers means less parameters (making the networks faster to train). It also means an FCN can work for **variable** image sizes given all connections are local.
+
+FCNN are also used for classification and regression. In these case, a [Global pooling layer](https://paperswithcode.com/method/global-average-pooling#:~:text=Global%20Average%20Pooling%20is%20a,in%20the%20last%20mlpconv%20layer.) is required to flatten the multi-dimensional input shape to a "flat"-dimensional shape.
 
 #### Recurrent Neural Network (RNN)
 The aforementioned neural network is part of "feed-forward" models, i.e. the data flow to the input layer into the output layer without having a feedback loop on some layer. RNNs instead, introduce a feedback loop for each layer. In this way, it is possible to add a short of *memory*: the output at the time step *t* depends upon the output at the state *t-1*. Another feature that has these network is that is input invariant size. In fact, they are used for *sequential* and *time-series* data.
