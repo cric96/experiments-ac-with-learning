@@ -15,7 +15,7 @@ So, as the first experiments, I try to use two regression models that are indepe
 #### Convolutional Neural Network (CNN)
 CNN are neural network models used to process image data. Indeed they are inspired by the pioneering works in the neural cortex about simple cells and complex cell. The idea is that at an input, we apply a sequence of [Convolutional filter](https://en.wikipedia.org/wiki/Kernel_(image_processing)) invariant for translation and rotation. These operations, applied multiple times, found relevant features. These are then given in input to a standard Multi-Layer Perception (or another classification/regression model) that can learn easier the association input/output. This is an example of Feature Learning, i.e. the neural network learns what features should extract in order to understand the right input and output association. 
 
-A pictorical representation of this network could be:
+A pictorial representation of this network could be:
 ![image](https://stanford.edu/~shervine/teaching/cs-230/illustrations/architecture-cnn-en.jpeg?3b7fccd728e29dc619e1bd8022bf71cf)
 
 #### Fully Convolutional Neural Network (FCNN)
