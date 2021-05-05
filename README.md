@@ -30,10 +30,17 @@ The aforementioned neural network is part of "feed-forward" models, i.e. the dat
 An RNN can be summarized as follow:
 ![image](https://stanford.edu/~shervine/teaching/cs-230/illustrations/description-block-rnn-ltr.png?74e25518f882f8758439bcb3637715e5)
 
+### Training configuration
+The configuration is the same of **Hop count regression**.
+
 ### Validation configuration
+Similar to **Hop count regression**, but in this case, I change the initial value in rep to a constant value otherwise the system was  very unstable..
 
 ### What happens
 
 ![Result](assets/plot/model-comparison.png)
 
 ### Final remarks
+
+#### They are the right model to variable input size?
+These models are designed mainly for temporal/spatial sequence, hence they tend to find temporal/spatial patterns accordingly. In this case, the neighbour values are more as a set than a sequence: the order in the sequence is irrelevant for our scope. So (1,2,3) is conceptually equal to (3,1,2) for example. Despite RNN could be seen as a general model that can approximate even a [turing machine](https://stats.stackexchange.com/questions/220907/meaning-and-proof-of-rnn-can-approximate-any-algorithm) perhaps they aren't the best model to use in this case (even worst for CNN model). Seeing also the result (that can be improved slightly with an accurate selection of parameter and hyper-parameter) I start to think that this is not the right way to manage a variable set.
