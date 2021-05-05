@@ -23,7 +23,7 @@ import org.nd4j.evaluation.regression.RegressionEvaluation
 import org.nd4j.linalg.cpu.nativecpu.NDArray
 import org.nd4j.linalg.dataset.DataSet
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator
-
+import DeepNetworks._
 import java.io.File
 import scala.jdk.CollectionConverters.IteratorHasAsScala
 import scala.jdk.CollectionConverters.ListHasAsScala
@@ -34,16 +34,16 @@ object LstmNetworkExport {
   val random              = new Random(seed.value)
   //network configuration
   private val outputSize = 1
-
   //dataset information
   private val epoch           = 1000
   private val patience        = 5
   private val splitValidation = 0.2
   private val splitTest       = 0.1
+  private val batchSize       = 16
 
+  //layers
   private val hiddenLayer = {
-    import DeepNetworks._
-    lstm(1, 20) :: lstm(20, 10) :: Nil
+    lstm(1, 20) :: lstm(20, 10) :: lstm(10, 5) :: Nil
   }
 
   //dataset preparation
@@ -61,7 +61,7 @@ object LstmNetworkExport {
     //network initialization
     lstmNetwork.init()
     attachUIServer(lstmNetwork)
-    lstmNetwork.addListeners(new ValidationScoreListener(dataset), new SimpleScoreListener)
+    lstmNetwork.addListeners(new SimpleScoreListener)
     //train
     val trainer = configureTrainer(lstmNetwork, epoch, patience, dataset.validationSet, dataset.trainingSet)
     trainer.fit()
@@ -107,9 +107,9 @@ object LstmNetworkExport {
     val (test, trainAndValidation) = shuffled.splitAt((shuffled.size * splitTest).toInt)
     val (validation, train)        = trainAndValidation.splitAt((trainAndValidation.size * splitValidation).toInt)
     DataSetSplit(
-      wrapDataSetToSequenceIterator(train),
-      wrapDataSetToSequenceIterator(validation),
-      wrapDataSetToSequenceIterator(test)
+      wrapDataSetToSequenceIterator(train, batchSize),
+      wrapDataSetToSequenceIterator(validation, batchSize),
+      wrapDataSetToSequenceIterator(test, batchSize)
     )
   }
 
