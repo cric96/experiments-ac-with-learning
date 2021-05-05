@@ -37,8 +37,25 @@ The configuration is the same of **Hop count regression**.
 Similar to **Hop count regression**, but in this case, I change the initial value in rep to a constant value otherwise the system was  very unstable..
 
 ### What happens
+** 05/05/2021**
+Currently, the results aren't good. The models don't learn the function *min + 1* and are very unstable (RNN in particular, can't stabilize the value of the global field). It is even true that the model currently is very simple:
+
+** 1D CNN **
+- conv1d(filters = 8, depth = 1, kernel = 2, actination = SELU)
+- output(in = 8, output = 1) 
+
+** RNN (using LSTM cell) **
+- LSTM(input_dimension = 1, output = 20, actination = Tanh)
+- output(in = 20, output = 1, activation = RELU)
+
+So, with complex network, is possible that the system can learn the correct function. 
+
+In the plot, there is a first moment where there is a big error (when the standard hop count isn't broadcast to the whole system). 
+Then the error stabilizes to a constant value that is great anyway (approximately 40 ~ 100 hop count error on average).
 
 ![Result](assets/plot/model-comparison.png)
+
+It can't be used in real problems at the moment.
 
 ### Final remarks
 
