@@ -46,7 +46,7 @@ pools:
   - pool: &extractor
       - time-distribution:
           type: DiracComb
-          parameters: [0.1]
+          parameters: [1]
         type: Event
         actions:
           - type: ExtractCsv

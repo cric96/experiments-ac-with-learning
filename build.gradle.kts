@@ -203,7 +203,7 @@ fun makeTest(
 }
 
 makeTest(name="simulationGUI", file = "simulation", effect = "effect")
-makeTest(name="simulation", file = "simulation", time = 11.0, vars = setOf("random"), threads = 1)
+makeTest(name="simulation", file = "simulation", time = 100.0, vars = setOf("random"), threads = 1)
 makeTest(name="multiValidation", file = "multi_validation", time = 100.0, vars = setOf("random"))
 makeTest(name="multiValidationGUI", file = "multi_validation", effect = "effect")
 defaultTasks("fatJar")
