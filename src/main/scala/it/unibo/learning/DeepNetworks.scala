@@ -11,7 +11,6 @@ import org.deeplearning4j.nn.conf.MultiLayerConfiguration
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration
 import org.deeplearning4j.nn.conf.inputs.InputType
 import org.deeplearning4j.nn.conf.layers._
-import org.deeplearning4j.nn.weights.WeightInit
 import org.nd4j.linalg.activations.Activation
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator
 import org.nd4j.linalg.dataset.{DataSet => JDataSet}
@@ -84,9 +83,9 @@ object DeepNetworks {
 
     val layersBuilt: List[Layer] = hidden ::: globalAveragePooling :: outputLayer :: Nil
     new NeuralNetConfiguration.Builder()
-      .weightInit(WeightInit.VAR_SCALING_NORMAL_FAN_AVG)
-      .activation(Activation.LEAKYRELU)
-      .convolutionMode(ConvolutionMode.Same)
+      //.weightInit(WeightInit.VAR_SCALING_NORMAL_FAN_AVG)
+      .activation(Activation.RELU)
+      .convolutionMode(ConvolutionMode.Strict)
       .seed(seed.value)
       .updater(new Adam())
       .list(layersBuilt: _*)

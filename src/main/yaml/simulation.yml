@@ -41,7 +41,7 @@ pools:
       type: Event
       actions:
         - type: RunScafiProgram
-          parameters: [it.unibo.simulations.HopCountOracle, 5.0] # second argument is retention time
+          parameters: [it.unibo.simulations.CrfGradient, 5.0] # second argument is retention time
     - program: send
   - pool: &extractor
       - time-distribution:

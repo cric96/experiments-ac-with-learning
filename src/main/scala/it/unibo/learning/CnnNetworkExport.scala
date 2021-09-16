@@ -38,11 +38,13 @@ object CnnNetworkExport {
 
   private val hidden = {
     import DeepNetworks._
-    conv1d(2, 1, 8) :: Nil
+    conv1d(3, 1, 9) ::
+      conv1d(2, 9, 7) ::
+      conv1d(2, 7, 5) :: Nil
   }
   //dataset information
   private val epoch           = 1000
-  private val patience        = 5
+  private val patience        = 20
   private val splitValidation = 0.2
   private val splitTest       = 0.1
 
@@ -54,7 +56,7 @@ object CnnNetworkExport {
       splitTest = splitTest
     )
   //neural network
-  private val configuration = DeepNetworks.fullyConvolutionalNetwork1D(hidden, outputSize, PoolingType.PNORM)
+  private val configuration = DeepNetworks.fullyConvolutionalNetwork1D(hidden, outputSize, PoolingType.SUM)
   private val network       = new MultiLayerNetwork(configuration)
 
   def main(args: Array[String]): Unit = {
@@ -74,10 +76,8 @@ object CnnNetworkExport {
       evaluation.eval(label, network.output(feature))
     }
     println(evaluation.stats())
-    println(network.feedForward((new NDArray(Array(8f, 10000f, 8f, 11f), Array(1, 1, 4)))))
-    println(network.output(new NDArray(Array(8f), Array(1, 1, 1))))
-    println(network.output(new NDArray(Array(8f, 12f), Array(1, 1, 2))))
-    println(network.output(new NDArray(Array(2f, 4f, 3f), Array(1, 1, 3))))
+
+    //println(network.output(new NDArray(Array(400f, 16f, 150, 50f, 300f, 0f, 500f, 50f), Array(1, 1, 8))))
     //store
     ModelSerializer.writeModel(network, "src/main/resources/network", false)
   }
@@ -98,15 +98,23 @@ object CnnNetworkExport {
       override def hasNext: Boolean       = reader.hasNext
       override def next(): List[Writable] = reader.next().asScala.toList
     }.toList
-    val shuffled = random.shuffle(reader).map(list => list.map(_.toFloat)).map { array =>
-      val elements = array.reverse.tail.toArray
-      val feature  = new NDArray(elements, Array(1, 1, elements.length))
-      val output   = new NDArray(Array(array.reverse.head))
-      new DataSet(feature, output)
-    }
+    val shuffled = random
+      .shuffle(reader)
+      .map(list => list.map(_.toFloat))
+      .filter(elem => elem.forall(_.isFinite))
+      .map { array =>
+        val elements = array.reverse.tail.toArray
+        val feature  = new NDArray(elements, Array(1, 1, elements.length))
+        val output   = new NDArray(Array(array.reverse.head))
+        new DataSet(feature, output)
+      }
     val (test, trainAndValidation) = shuffled.splitAt((shuffled.size * splitTest).toInt)
     val (validation, train)        = trainAndValidation.splitAt((trainAndValidation.size * splitValidation).toInt)
-    DataSetSplit(wrapDataSetToIterator(train, 1), wrapDataSetToIterator(validation, 1), wrapDataSetToIterator(test, 1))
+    DataSetSplit(
+      wrapDataSetToIterator(train, 64),
+      wrapDataSetToIterator(validation, 64),
+      wrapDataSetToIterator(test, 64)
+    )
   }
 
   private def attachUIServer(network: MultiLayerNetwork): Unit = {

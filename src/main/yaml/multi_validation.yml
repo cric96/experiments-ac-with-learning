@@ -48,7 +48,7 @@ pools:
         type: Event
         actions:
           - type: RunScafiProgram
-            parameters: [it.unibo.casestudy.NetworkEvaluator, 5.0] # second argument is retention time
+            parameters: [it.unibo.casestudy.CrfNetworkEvaluator, 5.0] # second argument is retention time
       - program: send
 displacements:
   - in:

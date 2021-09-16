@@ -1,12 +1,11 @@
 the_plots_labels:
   - Time                 #0
   - 'cnn'
-  - 'lstm'
 
 format : png
 
 the_plots_formats: # a list of plot format. Each format is a list of field index that you want to show in the plot. A line define an "experiment"
-  - [0, 1, 2] #a plot with Time, gradient and gradient(avg)
+  - [0, 1] #a plot with Time, gradient and gradient(avg)
   #- [0,11,12,13] ---> you can add multiple formats
 
 y_labels: ['MSE error'] ## you can specify the y label for each plot defined above (if you have three plot format, you can specify 3 y_labels
@@ -15,9 +14,9 @@ file_suffixes: # for each experiment, you can specify an ad-hoc suffix
   # - errors
 
 line_widths: ## for each label, it tells how much the line width
-  - [0, 1, 1]
+  - [0, 1]
 
-default_colors: &default_colors ["black", "red", "yellow"]
+default_colors: &default_colors ["black", "red"]
 
 the_plots_colors: # for each experiment and for each label, it tells the the color line. A color could be expressed as a string ("red", "yellow") or with Hexadecimal notation ("#FF00FF")
   - *default_colors
@@ -29,7 +28,7 @@ legend_position: ## for each experiment, it specifies where the legend should be
 legend_size: 12 # the same for all experiments
 
 force_limit_plot_y: # force the limit for each experiment.
-  - 200 # maximum value on the y axis
+  #- 1000 # maximum value on the y axis
 
 #force_limit_plot_x: # same as force_limit_plot_y but for the x axis
 #  - 800

@@ -23,6 +23,7 @@ import org.nd4j.evaluation.regression.RegressionEvaluation
 import org.nd4j.linalg.cpu.nativecpu.NDArray
 import org.nd4j.linalg.dataset.DataSet
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator
+import org.nd4j.linalg.factory.Nd4j
 
 import java.io.File
 import scala.jdk.CollectionConverters.IteratorHasAsScala
@@ -30,13 +31,16 @@ import scala.jdk.CollectionConverters.ListHasAsScala
 import scala.util.Random
 
 object MlpNetworkExport {
+  private def fact(n: Int): Int = (1 to n).product
+
   implicit val seed: Seed = Seed(42)
+  val howManyFeature      = 4
   val random              = new Random(seed.value)
   //network configuration
   private val outputSize = 1
   //dataset information
   private val epoch           = 10000
-  private val inputSize       = 10
+  private val inputSize       = fact(howManyFeature) * howManyFeature * 2
   private val patience        = 5
   private val splitValidation = 0.2
   private val splitTest       = 0.1
@@ -49,7 +53,7 @@ object MlpNetworkExport {
       splitTest = splitTest
     )
   //neural network
-  private val hiddenNeuronCount = 30 :: 10 :: 5 :: Nil
+  private val hiddenNeuronCount = 125 :: Nil
 
   private val mlpConfiguration =
     DeepNetworks.multiLayerRegressionConfiguration(inputSize, outputSize, hiddenNeuronCount)
@@ -72,6 +76,11 @@ object MlpNetworkExport {
       evaluation.eval(label, mlpNetwork.output(feature))
     }
     println(evaluation.stats())
+    val elements: Array[Double] =
+      Array((300.0, 50.0), (200.0, 30.0), (500.0, 20.0), (1200.0, 30.0)).permutations.flatten
+        .flatMap(data => Array(data._1, data._2))
+        .toArray
+    println(mlpNetwork.output(Nd4j.create(Array(elements))))
     //store
     ModelSerializer.writeModel(mlpNetwork, "src/main/resources/mlpnetwork", false)
   }
@@ -98,16 +107,20 @@ object MlpNetworkExport {
       .filter(list => list.forall(_.isFinite))
       .map { array =>
         val elements = array.reverse.tail.toArray
-        val feature  = new NDArray(elements, Array(elements.length))
-        val output   = new NDArray(Array(array.reverse.head))
+        val feature  = new NDArray(elements, Array(1, elements.length))
+        if (feature.size(1) != inputSize) {
+          println(array.size)
+          println(array)
+        }
+        val output = new NDArray(Array(array.reverse.head))
         new DataSet(feature, output)
       }
     val (test, trainAndValidation) = shuffled.splitAt((shuffled.size * splitTest).toInt)
     val (validation, train)        = trainAndValidation.splitAt((trainAndValidation.size * splitValidation).toInt)
     DataSetSplit(
-      wrapDataSetToIterator(train, 1),
-      wrapDataSetToIterator(validation, 1),
-      wrapDataSetToIterator(test, 1)
+      wrapDataSetToIterator(train, 64),
+      wrapDataSetToIterator(validation, 64),
+      wrapDataSetToIterator(test, 64)
     )
   }
 
